@@ -2,6 +2,19 @@ const router = require("express").Router();
 
 /**
  * =========================
+ * HEALTH CHECK
+ * =========================
+ * GET /api/v1/health
+ */
+router.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    uptime: process.uptime(),
+    timestamp: Date.now(),
+  });
+});
+/**
+ * =========================
  * AUTH
  * =========================
  * /api/v1/auth/login

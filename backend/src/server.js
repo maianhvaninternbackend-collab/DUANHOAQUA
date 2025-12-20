@@ -1,15 +1,16 @@
-const express = require("express");
-const apiRoutes = require("./routes/api.routes");
-const errorMiddleware = require("./middlewares/error.middleware");
+require("dotenv").config();
 
-const app = express();
+const app = require("./app");
+const connectDB = require("./config/database");
 
-app.use(express.json());
+const PORT = process.env.PORT || 8080;
 
-// base api version
-app.use("/api/v1", apiRoutes);
+connectDB();
 
-// error handler (luôn để cuối)
-app.use(errorMiddleware);
+app.listen(PORT, () => {
+  console.log(
+    `🚀 Server running in ${process.env.NODE_ENV} mode at http://localhost:${PORT}`
+  );
+});
 
 module.exports = app;

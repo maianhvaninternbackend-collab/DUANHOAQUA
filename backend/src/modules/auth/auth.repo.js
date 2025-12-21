@@ -1,7 +1,9 @@
 const User = require("../user/user.model");
 
-exports.findByEmailForLogin = (email) =>
-  User.findOne({ email, isDeleted: false });
+exports.findByEmailForLogin = (email) => {
+  return User.findOne({ email, isDeleted: false })
+    .select("+passwordHash");
+};
 
 exports.findAnyByEmail = (email) =>
   User.findOne({ email });

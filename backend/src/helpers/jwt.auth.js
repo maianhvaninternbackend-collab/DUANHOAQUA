@@ -4,7 +4,6 @@ const httpStatus = require("../core/httpStatus");
 
 const ACCESS_TOKEN_EXPIRES_IN = "15m";
 const REFRESH_TOKEN_EXPIRES_IN = "7d";
-
 /**
  * Generate access token
  */

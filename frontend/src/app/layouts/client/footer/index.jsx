@@ -8,9 +8,11 @@ import SocialFooter from "./social_footer";
 import ExploreItem from "./explore_items";
 import NewsItem from "./news_items";
 import ContactItem from "./contact_items";
+import { Button, Input } from "antd";
+import { SendOutlined } from "@ant-design/icons";
 
 import { FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
-import { IoMdMail } from "react-icons/io";
+import { IoIosSend, IoMdMail } from "react-icons/io";
 
 const Footer = () => {
   return (
@@ -73,7 +75,7 @@ const Footer = () => {
           </div>
 
           {/* ===== CONTACT ===== */}
-          <div>
+          <div className="space-y-5">
             <p className="relative inline-block pb-3 mb-6 font-medium">
               Contact
               <span className="absolute left-0 bottom-0 h-[2px] w-10 bg-[#4baf46]" />
@@ -98,6 +100,27 @@ const Footer = () => {
 131 Chu Huy Mân, P. Phúc Đồng, Hà Nội"
               />
             </ul>
+            <div className="flex max-w-md">
+              <Input
+                placeholder="Your Email Address"
+                size="large"
+                className="!rounded-r-none !px-4 !h-11"
+              />
+
+              <Button
+                size="large"
+                icon={<IoIosSend size={24} color="#fff" />}
+                className="
+      !rounded-l-none
+      !border-none
+      !bg-[#4baf46]
+      hover:!bg-[#43a13e]
+      !px-6
+      !h-11
+      !leading-none
+    "
+              />
+            </div>
           </div>
         </div>
       </div>

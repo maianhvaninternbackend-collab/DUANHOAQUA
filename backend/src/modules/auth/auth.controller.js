@@ -1,24 +1,32 @@
 const asyncHandler = require("../../core/asyncHandler");
 const authService = require("./auth.service");
 
-module.exports.login = asyncHandler(async (req, res) => {
-  const result = await authService.login(req.body);
-  res.cookie("refresh_token", result.refreshToken, {
-    httpOnly: true,
-    sameSite: "lax",
-    path: "/",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  });
+// ===== USER =====
+exports.loginUser = asyncHandler(async (req, res) => {
+  const result = await authService.login(req.body, "user");
   res.json({ data: result });
 });
 
-module.exports.register = asyncHandler(async (req, res) => {
-  const result = await authService.register(req.body);
+exports.registerUser = asyncHandler(async (req, res) => {
+  const result = await authService.register(req.body, "user");
   res.json({ data: result });
 });
 
-module.exports.refreshToken = asyncHandler(async (req, res) => {
-  const { accessToken, newRefreshToken } = await authService.refreshToken(req);
+// ===== ADMIN =====
+exports.loginAdmin = asyncHandler(async (req, res) => {
+  const result = await authService.login(req.body, "admin");
+  res.json({ data: result });
+});
+
+exports.registerAdmin = asyncHandler(async (req, res) => {
+  const result = await authService.register(req.body, "admin");
+  res.json({ data: result });
+});
+
+// ===== COMMON =====
+exports.refreshToken = asyncHandler(async (req, res) => {
+  const { accessToken, newRefreshToken } =
+    await authService.refreshToken(req);
 
   res.cookie("refresh_token", newRefreshToken, {
     httpOnly: true,
@@ -27,14 +35,10 @@ module.exports.refreshToken = asyncHandler(async (req, res) => {
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
-  res.status(200).json({ accessToken });
+  res.json({ accessToken });
 });
 
-module.exports.logout = asyncHandler(async (req, res) => {
-  await authService.logout(req);
-
+exports.logout = asyncHandler(async (req, res) => {
   res.clearCookie("refresh_token");
-  res.clearCookie("token");
-
-  res.status(200).json({ message: "Logout thành công" });
+  res.json({ message: "Logout thành công" });
 });

@@ -1,8 +1,20 @@
-const SocialHeader = ({ icon }) => {
+const SocialHeader = ({ icon, alt = "social icon" }) => {
   return (
-    <div className="bg-[#f8f6ef] size-8 rounded-full inline-flex justify-center items-center">
-      <img src={icon}></img>
-    </div>
+    <button
+      className="
+        bg-[#f8f6ef]
+        size-8
+        rounded-full
+        inline-flex
+        justify-center
+        items-center
+        hover:bg-[#eae7dd]
+        transition
+        cursor-pointer
+      "
+    >
+      <img src={icon} alt={alt} className="w-4 h-4" />
+    </button>
   );
 };
 export default SocialHeader;

@@ -1,4 +1,3 @@
-
 import logo from "../../../../assets/logo/logo.png";
 import hotline_icon from "../../../../assets/icons/hotline_icon.png";
 import send_mail_icon from "../../../../assets/icons/send_mail_icon.png";
@@ -11,34 +10,48 @@ const Header = () => {
   return (
     <>
       <header>
-        <div className="pb-10  container mx-auto flex justify-center items-center">
-          <div className="flex-shrink-0">
-            <img src={logo} alt="logo" className="h-28" />
-          </div>
-          <div className="flex justify-center items-center gap-5 ms-18">
-            <div className="flex gap-3">
-              <SocialHeader icon={facebook_icon}></SocialHeader>
-              <SocialHeader icon={instagram_icon}></SocialHeader>
+        <div className="container mx-auto pb-10">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-x-6 gap-y-4">
+            {/* Logo */}
+            <div className="flex-shrink-0">
+              <img src={logo} alt="logo" className="h-28" />
             </div>
 
-            <HeaderContactItem
-              icon={hotline_icon}
-              label={"Hotline"}
-              value={"+84.988.387.811"}
-            ></HeaderContactItem>
-            <HeaderContactItem
-              icon={send_mail_icon}
-              label={"Send email"}
-              value={"Joygreenvn@gail.com"}
-            ></HeaderContactItem>
-            <HeaderContactItem
-              icon={location_icon}
-              label={"Send email"}
-              value={"226 Lê Trọng Tấn, P.Định Công, Hà Nội"}
-              value2={"   131 Chu Huy Mân, P.Phúc Đổng, Hà Nội"}
-              type="address"
-              showDivider={false}
-            ></HeaderContactItem>
+            {/* Social + Contact */}
+           <div className="hidden md:flex flex-col md:flex-row items-center gap-5 max-w-[1100px]">
+              {/* Social */}
+              <div className="flex gap-3">
+                <SocialHeader icon={facebook_icon} />
+                <SocialHeader icon={instagram_icon} />
+              </div>
+
+              {/* Contact */}
+              <div className="flex flex-col md:flex-row md:items-center">
+                <HeaderContactItem
+                  icon={hotline_icon}
+                  label="Hotline"
+                  value="+84.988.387.811"
+                />
+
+                {/* Divider */}
+                <span className="hidden md:block mx-6 h-16 w-[1.5px] bg-gray-300" />
+
+                <HeaderContactItem
+                  icon={send_mail_icon}
+                  label="Send email"
+                  value="Joygreenvn@gmail.com"
+                />
+
+                {/* Divider */}
+                <span className="hidden md:block mx-6 h-16 w-[1.5px] bg-gray-300" />
+
+                <HeaderContactItem
+                  icon={location_icon}
+                  value="226 Lê Trọng Tấn, P.Định Công, Hà Nội"
+                  value2="131 Chu Huy Mân, P.Phúc Đổng, Hà Nội"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </header>

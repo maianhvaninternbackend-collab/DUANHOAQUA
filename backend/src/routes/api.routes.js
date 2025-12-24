@@ -34,7 +34,7 @@ router.use("/auth", require("../modules/auth/auth.routes"));
  * /api/v1/users/me/change-password
  */
 router.use("/users", require("../modules/user/user.routes"));
-
+router.use("/categories", require("../modules/category/category.routes"));
 /**
  * =========================
  * (TƯƠNG LAI)

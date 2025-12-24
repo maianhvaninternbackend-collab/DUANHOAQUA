@@ -30,27 +30,32 @@ const UserPage = () => {
 
     // ===== FETCH USERS =====
     const fetchUsers = async () => {
-        setLoading(true);
-        try {
-            const res = await getUsersByAdminApi({
-                page,
-                limit,
-                search,
-                sort
-            });
+    setLoading(true);
+    try {
+        const res = await getUsersByAdminApi({
+            page,
+            limit,
+            search,
+            sort
+        });
 
-            const data = res.data;
-
-            if (data.EC !== 0) throw new Error(data.EM);
-
-            setUsers(data.DT);
-            setTotalPages(data.meta.totalPages);
-        } catch (error) {
-            showNotification("Error", error.message || "Fetch user failed");
-        } finally {
-            setLoading(false);
+        if (!res || !res.data || !res.data.items) {
+            setUsers([]);
+            setTotalPages(1);
+            return;
         }
-    };
+
+        setUsers(res.data.items);
+        setTotalPages(res.data.totalPages || 1);
+
+    } catch (error) {
+        showNotification("Error", "Fetch user failed");
+        setUsers([]);
+    } finally {
+        setLoading(false);
+    }
+};
+
 
     useEffect(() => {
         fetchUsers();
@@ -176,7 +181,7 @@ const UserPage = () => {
                                 <tr key={u._id}>
                                     <td>{u._id}</td>
                                     <td>{u.email}</td>
-                                    <td>{u.name}</td>
+                                    <td>{u.fullName}</td>
                                     <td>
                                         <span className="role-tag">{u.role}</span>
                                     </td>

@@ -16,12 +16,14 @@ export const updateAdminApi = (id, name) =>
 export const deleteAdminApi = (id) =>
   axiosAdmin.delete(`/api/v1/admins/${id}`);
 
+
 /* ================= USER MANAGEMENT (BY ADMIN) ================= */
-export const getUsersByAdminApi = (params) =>
-  axiosAdmin.get("/api/v1/admin/users", { params });
+export const getUsersByAdminApi = (params) => {
+  return axiosAdmin.get("/api/v1/admins/users", { params });
+};
 
 export const deleteUserByAdminApi = (id) =>
-  axiosAdmin.delete(`/api/v1/admin/users/${id}`);
+  axiosAdmin.delete(`/api/v1/admins/users/${id}`);
 
 /* ================= ADMIN SELF ================= */
 export const updateAdminProfileApi = (data) =>

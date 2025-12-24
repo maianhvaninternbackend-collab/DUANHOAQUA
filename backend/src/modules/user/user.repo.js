@@ -1,50 +1,59 @@
-const User = require ("./user.model");
+const User = require("./user.model");
 
 // ===== QUERY =====
 exports.findById = (id) => {
     return User.findOne({
-        _id: id, is, isDeleted: false
+        _id: id,
+        isDeleted: false,
     });
 };
 
 exports.findByIdWithPassword = (id) => {
-    return User.findOne({_id: id, isDeleted: false}).select("+passwordHash");
+    return User.findOne({
+        _id: id,
+        isDeleted: false
+    }).select("+passwordHash");
 };
 
 exports.findAll = (filter = {}, options = {}) => {
     const page = Number(options.page) || 1;
     const limit = Number(options.limit) || 10;
-    const  skip = (page - 1) * limit;
+    const skip = (page - 1) * limit;
 
     return Promise.all([
-        User.find(filter)
-        .sort(options.sort || "-craeteAt")
+        User.find(filter) 
+        .sort(options.sort || "-createdAt")
         .skip(skip)
         .limit(limit),
-    User.countDocuments(filter),
+        User.countDocuments(filter),
     ]);
 };
 
 // ===== COMMAND =====
-exports.updateById = (id, data) =>{
-    return User.findByIdAndUpdate(id, data, { new: true});
+exports.updateById = (id, data) => {
+    return User.findByIdAndUpdate(id, data, {
+        new: true
+    });
 };
 
 exports.incrementAuthzVersion = (id) => {
     return User.findByIdAndUpdate(
-        id,
-        { $inc: { authzVersion: 1} },
-        { new: true}
+        id, {
+            $inc: {
+                authzVersion: 1
+            }
+        }, {
+            new: true
+        }
     );
 };
 
-exports.sortDelete = (id) =>{
+exports.sortDelete = (id) => {
     return User.findByIdAndUpdate(
-        id,
-        {
-            isDeleted: true, isActive: false
-        },
-        {
+        id, {
+            isDeleted: true,
+            isActive: false
+        }, {
             new: true
         }
     );

@@ -85,34 +85,30 @@ const AdminPage = () => {
     };
 
     // ===== FETCH ADMIN =====
+    // ===== FETCH ADMIN =====
     useEffect(() => {
-        const fetchAdmin = async () => {
-            setLoading(true);
-            try {
-                const res = await getAdminApi({
-                    search,
-                    sort,
-                    page,
-                    limit
-                });
+    const fetchAdmin = async () => {
+        setLoading(true);
+        try {
+            const res = await getAdminApi({
+                search,
+                sort,
+                page,
+                limit,
+            });
 
-                if (res.EC !== 0) {
-                    showNotification("error", "Lỗi", res.EM);
-                    return;
-                }
+            setDataSource(res.data.items);
+            setTotalPages(res.data.totalPages);
 
-                setDataSource(res.data);
-                setTotalPages(res.meta.totalPages);
+        } catch (error) {
+            showNotification("error", "Lỗi", "Không thể tải admin");
+        } finally {
+            setLoading(false);
+        }
+    };
 
-            } catch (error) {
-                showNotification("error", "Lỗi", "Không thể tải admin");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchAdmin();
-    }, [search, sort, page]); // 👈 BẮT BUỘC
+    fetchAdmin();
+}, [search, sort, page]);
 
     //PAGINATION
     const renderPages = () => {
@@ -241,7 +237,7 @@ const AdminPage = () => {
                                 <tr key={item._id}>
                                     <td>{item._id}</td>
                                     <td>{item.email}</td>
-                                    <td>{item.name}</td>
+                                    <td>{item.fullName}</td>
                                     <td>
                                         <span className="role-tag">{item.role}</span>
                                     </td>

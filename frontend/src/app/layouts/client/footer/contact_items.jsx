@@ -3,10 +3,10 @@ const ContactItem = ({ link, icon, text }) => {
     <li>
       <a
         href={link}
-        className="inline-flex justify-baseline items-start gap-3 text-sm text-[#828078] transition hover:opacity-75"
+        className="flex items-start gap-3 text-sm text-[#828078] transition hover:text-white"
       >
-        {icon}
-        <span className="whitespace-pre-line">{text}</span>
+        <span className="mt-1">{icon}</span>
+        <span className="whitespace-pre-line leading-snug">{text}</span>
       </a>
     </li>
   );

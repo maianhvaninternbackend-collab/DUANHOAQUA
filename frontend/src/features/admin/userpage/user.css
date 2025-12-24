@@ -1,0 +1,338 @@
+/* ===== USER PAGE CONTAINER ===== */
+.user-container {
+  width: 100%;
+  padding: 0;          /* sát filter bar */
+  box-sizing: border-box;
+}
+
+/* Title */
+.user-container h2 {
+  margin: 0 0 16px 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: #0d1a36;
+}
+
+/* ===== TABLE ===== */
+.user-table {
+  width: 100%;
+  background: #fff;
+  border-radius: 14px;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  box-shadow:
+    0 10px 30px rgba(17, 24, 39, 0.08),
+    0 2px 6px rgba(17, 24, 39, 0.04);
+}
+
+/* Header */
+.user-table thead th {
+  background: #f1f5fb;
+  padding: 16px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #2c3e50;
+  border-bottom: 1px solid #e4ebf3;
+  text-align: left;
+}
+
+/* Body */
+.user-table tbody td {
+  padding: 16px;
+  font-size: 14px;
+  color: #2c3e50;
+  border-bottom: 1px solid #f1f3f7;
+}
+
+.user-table tbody tr:hover td {
+  background: #f8fbff;
+}
+
+.user-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.btn-delete {
+  background: #ff4d4f;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-delete:hover {
+  background: #d9363e;
+}
+
+
+
+/* ================================
+   ROLE TAG
+================================ */
+
+.role-tag {
+  display: inline-block;
+  background: #5865f2;
+  color: #ffffff;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(88, 101, 242, 0.35);
+}
+
+/* ================================
+   PAGINATION
+================================ */
+
+.pagination {
+  margin-top: 16px;              /* 👈 sát bảng hơn */
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.pagination button {
+  min-width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid #dbe3ee;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: #34495e;
+  transition: 0.2s;
+}
+
+.pagination button:hover:not(:disabled) {
+  border-color: #5865f2;
+  color: #5865f2;
+}
+
+.pagination .active {
+  background: #5865f2;
+  color: #ffffff;
+  border-color: #5865f2;
+}
+
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ================================
+   TOAST
+================================ */
+
+.toast-wrapper {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+.toast-item {
+  width: 300px;
+  background: #ffffff;
+  padding: 14px 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border-left: 5px solid #ff4d4f;
+
+  box-shadow:
+    0 10px 30px rgba(17, 24, 39, 0.15);
+
+  animation: slideIn 0.3s ease-out,
+             fadeOut 0.4s ease-in 2.6s forwards;
+}
+
+.toast-icon {
+  font-size: 20px;
+  color: #ff4d4f;
+}
+
+.toast-content {
+  flex: 1;
+}
+
+.toast-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #d4380d;
+}
+
+.toast-desc {
+  font-size: 14px;
+  color: #555;
+  margin-top: 2px;
+}
+
+.toast-close {
+  cursor: pointer;
+  opacity: 0.7;
+  font-size: 16px;
+}
+
+.toast-close:hover {
+  opacity: 1;
+}
+
+/* ================================
+   USER TOOLBAR
+================================ */
+.user-toolbar {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+/* ================================
+   USER TOOLBAR
+================================ */
+.user-toolbar {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+
+/* ================================
+   SORT SELECT – SMOOTH UI
+================================ */
+.sort-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  min-width: 170px;
+  padding: 10px 42px 10px 14px;
+  border-radius: 12px;
+
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 14px;
+
+  border: 1px solid #e5eaf2;
+
+  font-size: 14px;
+  font-weight: 500;              /* 👈 mượt hơn */
+  letter-spacing: 0.2px;         /* 👈 rất nhẹ */
+  color: #334155;                /* 👈 xám đậm, không gắt */
+
+  cursor: pointer;
+  outline: none;
+
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.03),
+    0 6px 18px rgba(15, 23, 42, 0.06);
+
+  transition: all 0.2s ease;
+}
+
+/* hover – nhẹ nhàng */
+.sort-select:hover {
+  border-color: #c7d2fe;
+  box-shadow:
+    0 4px 10px rgba(15, 23, 42, 0.06),
+    0 10px 24px rgba(15, 23, 42, 0.10);
+}
+
+/* focus – nhấn bằng viền + shadow, KHÔNG nhấn chữ */
+.sort-select:focus {
+  border-color: #6366f1;
+  box-shadow:
+    0 0 0 3px rgba(99, 102, 241, 0.18),
+    0 10px 26px rgba(15, 23, 42, 0.12);
+}
+
+/* option – để regular cho dễ đọc */
+.sort-select option {
+  font-weight: 400;
+  color: #334155;
+}
+/*Search*/
+.search-input {
+  width: 260px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid #e0e6f0;
+  font-size: 14px;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: #4b67ff;
+}
+
+/* ================================
+   PAGINATION
+================================ */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 30px 0;
+}
+
+.pagination button {
+  min-width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid #d0d7f2;
+  background: #fff;
+  color: #3b4bd8;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+  background: #eef2ff;
+}
+
+.pagination button.active {
+  background: #4f5dff;
+  color: #fff;
+  border-color: #4f5dff;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination .dots {
+  padding: 0 6px;
+  font-size: 16px;
+  color: #999;
+}
+/* ================================
+   ANIMATION
+================================ */
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+}

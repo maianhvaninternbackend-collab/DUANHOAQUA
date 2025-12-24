@@ -1,16 +1,11 @@
 const User = require("../user/user.model");
 const Admin = require("../admin/admin.model");
 
-
-exports.findByEmailForLogin = (email) =>
-  User.findOne({ email, isDeleted: false });
-
 exports.findByEmailForLogin = (email, type = "user") => {
   const Model = type === "admin" ? Admin : User;
   return Model.findOne({ email, isDeleted: false })
     .select("+passwordHash");
 };
-
 
 exports.findAnyByEmail = (email, type = "user") => {
   const Model = type === "admin" ? Admin : User;

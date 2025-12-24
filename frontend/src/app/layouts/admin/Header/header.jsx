@@ -10,6 +10,7 @@ import { RiAdminFill } from "react-icons/ri";
 import { FaProductHunt } from "react-icons/fa6";
 import { BiCategory } from "react-icons/bi";
 import { axiosAdmin } from "../../../../shared/utils/axios.custiomize";
+import logo from "../../../../assets/logo/logo.png"
 import "./header.css";
 
 function HeaderAdmin() {
@@ -58,7 +59,7 @@ function HeaderAdmin() {
 
   return (
     <aside className="admin-sidebar">
-      <img src="/logo.png" className="logo" alt="logo" />
+      <img src={logo} className="logo" alt="logo" />
 
       <nav className="sidebar-menu">
         <Link

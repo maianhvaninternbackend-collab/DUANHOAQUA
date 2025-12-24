@@ -46,4 +46,3 @@ router.use("/users", require("../modules/user/user.routes"));
 router.use("/admins", require("../modules/admin/admin.routes"));
 
 module.exports = router;
-

@@ -1,4 +1,6 @@
 require("dotenv").config();
+console.log("👉 process.cwd() =", process.cwd());
+console.log("👉 MONGODB_URI =", process.env.MONGODB_URI);
 
 const app = require("./app");
 const connectDB = require("./config/database");

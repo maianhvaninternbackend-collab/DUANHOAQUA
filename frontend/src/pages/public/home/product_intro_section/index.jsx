@@ -20,35 +20,26 @@ const ProductIntroSection = () => {
       className="min-h-[80vh] py-10 lg:p-5 flex items-center bg-cover bg-center overflow-hidden"
       style={{ backgroundImage: `url(${product_intro_background})` }}
     >
-      {/* Desktop: Giữ nguyên max-w-[80vw], gap-15, flex-row.
-          Mobile: flex-col, w-[90vw], gap-10.
-      */}
       <div className="flex flex-col lg:flex-row max-w-[90vw] lg:max-w-[80vw] mx-auto px-2 lg:px-5 justify-center items-center lg:items-start gap-10 lg:gap-15">
-        
-        {/* KHỐI ẢNH BÊN TRÁI 
-            Desktop: w-1/4. Mobile: Hiện trên cùng, thu nhỏ lại.
-        */}
         <div className="w-2/3 lg:w-1/4 max-w-[250px] lg:max-w-none">
-          <img 
-            src={mot_hop_trai_cay} 
-            alt="Mot hop trai cay" 
-            className="w-full h-auto drop-shadow-xl" 
+          <img
+            src={mot_hop_trai_cay}
+            alt="Mot hop trai cay"
+            className="w-full h-auto drop-shadow-xl"
           />
         </div>
 
-        {/* KHỐI NỘI DUNG CHÍNH 
-            Desktop: w-2/4. Mobile: w-full, căn giữa nội dung.
-        */}
         <div className="w-full lg:w-2/4 space-y-4 md:space-y-2 text-center lg:text-left">
           <h3 className="font-bold text-xl md:text-2xl uppercase leading-tight text-gray-800">
-            Một hộp trái cây mỗi ngày – bí quyết nhỏ cho niềm vui và sức khỏe lớn
+            Một hộp trái cây mỗi ngày – bí quyết nhỏ cho niềm vui và sức khỏe
+            lớn
           </h3>
           <p className="text-[#6c6c6c] text-base md:text-xl leading-relaxed">
             Cơ thể chúng ta cần ít nhất 25–30g chất xơ mỗi ngày để hệ tiêu hóa
             hoạt động trơn tru. Chỉ một hộp trái cây đầy đủ của Nhà Joy đã giúp
             bạn nạp tới 20–30% lượng chất xơ khuyến nghị.
           </p>
-          
+
           <ul className="space-y-2 py-2 inline-block lg:block text-left">
             <LiIntro text="Mỗi ngày một hộp, đẩy đủ sắc màu vitamin." />
             <LiIntro text="Không còn lo ngại rửa, gọt, bày biện" />
@@ -62,14 +53,10 @@ const ProductIntroSection = () => {
           </div>
         </div>
 
-        {/* KHỐI ICON BÊN PHẢI 
-            Desktop: w-1/4, h-auto, p-8. 
-            Mobile: Chuyển thành hàng ngang hoặc lưới 2 cột để tiết kiệm diện tích.
-        */}
-        <div className="w-full lg:w-1/4 rounded-xl shadow-2xl bg-white/80 backdrop-blur-sm lg:bg-transparent h-auto p-6 lg:p-8 border border-white/50">
-          <ul className="grid grid-cols-2 lg:grid-cols-1 gap-4 lg:space-y-4">
+        <div className="w-full lg:w-1/4 rounded-xl shadow-2xl bg-white/80 backdrop-blur-sm lg:bg-transparent h-auto p-6 border border-white/50">
+          <ul className="grid grid-cols-2 lg:grid-cols-1 gap-4 lg:space-y-3">
             {fruitIcons.map((item, index) => (
-              <LiIcon 
+              <LiIcon
                 key={index}
                 icon={item.icon}
                 alt={item.alt}
@@ -78,7 +65,6 @@ const ProductIntroSection = () => {
             ))}
           </ul>
         </div>
-
       </div>
     </section>
   );

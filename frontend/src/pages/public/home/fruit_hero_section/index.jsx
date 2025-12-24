@@ -4,13 +4,12 @@ import trai_cay_cat_san from "../../../../assets/trai_cay_cat_san.png";
 const FruitHeroSection = () => {
   return (
     <section className="mt-15 bg-[#e8f0ed] py-15 lg:py-20">
-      {/* Tăng py để không bị cắt khối absolute */}
+    
       <div className="flex flex-col-reverse lg:flex-row gap-10 w-[90vw] lg:w-[85vw] mx-auto relative">
-        {/* --- KHỐI TRANG TRÍ --- */}
-        {/* Khối vàng nhạt: Giữ nguyên w-40 h-9, căn chỉnh z-index để nằm dưới khối vàng đậm */}
+       
         <div className="hidden lg:block bg-[#f9db9e] absolute w-40 h-10 -top-[25%] left-10 z-0"></div>
 
-        {/* Khối vàng đậm: Giữ nguyên size-40 và absolute -top-[20%] của Desktop */}
+       
         <div
           className="
           relative lg:absolute 

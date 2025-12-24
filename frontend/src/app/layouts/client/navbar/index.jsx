@@ -11,7 +11,7 @@ const Navbar = ({ onScrollToSection }) => {
   const [openMix, setOpenMix] = useState(false);
   const [openShop, setOpenShop] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   useEffect(() => {
     const handleScroll = () => {
       setIsSticky(window.scrollY > 200);
@@ -45,7 +45,15 @@ const Navbar = ({ onScrollToSection }) => {
           >
             <CiSearch className="size-7 cursor-pointer" />
           </button>
-          <CiShoppingCart className="size-7 cursor-pointer" />
+          <div className="relative">
+            <CiShoppingCart
+              className="size-7 cursor-pointer"
+              onClick={() => navigate("/cart")}
+            />
+            <span className="absolute -top-1 -right-1 min-w-3 h-3 flex items-center justify-center rounded-full bg-[var(--color-green-button)] px-1 text-[8px] font-semibold text-white">
+              0
+            </span>
+          </div>
           <button
             onClick={() => setIsMobileMenuOpen((prev) => !prev)}
             className="text-2xl"
@@ -246,7 +254,10 @@ const Navbar = ({ onScrollToSection }) => {
 
           {/* CART */}
           <div className="relative">
-            <CiShoppingCart className="size-7 cursor-pointer" onClick={()=>navigate("/cart")} />
+            <CiShoppingCart
+              className="size-7 cursor-pointer"
+              onClick={() => navigate("/cart")}
+            />
             <span className="absolute -top-1 -right-2 min-w-4 h-4 flex items-center justify-center rounded-full bg-[var(--color-green-button)] px-1 text-[10px] font-semibold text-white">
               0
             </span>

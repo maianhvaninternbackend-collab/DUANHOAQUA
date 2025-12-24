@@ -17,11 +17,9 @@ const Footer = () => {
   return (
     <footer className="bg-[#101828] text-white overflow-hidden">
       <div className="mx-auto max-w-6xl px-6 py-12 md:py-20">
-        {/* Responsive Grid: 1 cột trên mobile, 2 cột trên tablet, 4 cột trên desktop */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-8">
-          {/* ===== LEFT: LOGO ===== */}
-          <div className="flex flex-col space-y-5">
-            <img src={joygreen_white} className="w-40 md:w-48" alt="logo" />
+          <div className="flex flex-col -mt-7 space-y-5">
+            <img src={joygreen_white} className="w-40  md:w-48" alt="logo" />
             <p className="max-w-xs text-sm leading-relaxed text-[#828078]">
               There are many variations of passages of lorem ipsum available,
               but the majority suffered.

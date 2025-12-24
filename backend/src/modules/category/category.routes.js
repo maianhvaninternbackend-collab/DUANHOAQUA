@@ -1,7 +1,7 @@
 const express = require("express");
 const route = express.Router();
-const categoryUserController = require("./controller/category.user.controller");
-const categoryAdminController = require("./controller/category.admin.controller");
+const categoryUserController = require("./controllers/category.user.controller");
+const categoryAdminController = require("./controllers/category.admin.controller");
 const auth = require("../../middlewares/auth.middleware");
 const adminOnly = require("../../middlewares/admin.middleware");
 route.get("/me/:id", categoryUserController.getCategoryDetails);

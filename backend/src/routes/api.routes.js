@@ -35,6 +35,7 @@ router.use("/auth", require("../modules/auth/auth.routes"));
  */
 router.use("/users", require("../modules/user/user.routes"));
 router.use("/categories", require("../modules/category/category.routes"));
+router.use("/products", require("../modules/product/product.routes"));
 /**
  * =========================
  * (TƯƠNG LAI)

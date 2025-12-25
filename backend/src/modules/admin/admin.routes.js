@@ -18,6 +18,7 @@ router.put("/me/change-password", auth, adminOnly, ctrl.changePassword);
 
 // ===== ADMIN MANAGEMENT =====
 router.get("/", auth, adminOnly, ctrl.getAdmins);
+router.put("/:id", auth, adminOnly, ctrl.updateAdmin);
 
 // ⚠️ PHẢI ĐỂ CUỐI
 router.get("/:id", auth, adminOnly, ctrl.getAdminDetail);

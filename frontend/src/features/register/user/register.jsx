@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { registerUserApi } from "../../../api/auth.api";
 import "./register.css";
@@ -7,85 +7,112 @@ import "./register.css";
 const RegisterPage = () => {
   const navigate = useNavigate();
 
+  // ================= STATE =================
   const [formValues, setFormValues] = useState({
-    name: "",
+    fullName: "",
     email: "",
-    password: ""
+    password: "",
+    confirmPassword: "",
   });
 
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
-  const [notification, setNotification] = useState({ message: "", type: "" });
+  const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState({
+    message: "",
+    type: "",
+  });
 
+  // ================= HANDLERS =================
   const handleChange = (e) => {
-    setFormValues({ ...formValues, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    setFormValues((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
   };
 
+  // ================= VALIDATE =================
   const validate = () => {
     const newErrors = {};
 
-    if (!formValues.name) newErrors.name = "Please input your name!";
-    if (!formValues.email) newErrors.email = "Please input your email!";
-    else if (!/\S+@\S+\.\S+/.test(formValues.email))
+    if (!formValues.fullName.trim()) {
+      newErrors.fullName = "Please input your full name!";
+    }
+
+    if (!formValues.email) {
+      newErrors.email = "Please input your email!";
+    } else if (!/\S+@\S+\.\S+/.test(formValues.email)) {
       newErrors.email = "Email is invalid!";
-    if (!formValues.password) newErrors.password = "Please input your password!";
+    }
+
+    if (!formValues.password) {
+      newErrors.password = "Please input your password!";
+    } else if (formValues.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters!";
+    }
+
+    if (!formValues.confirmPassword) {
+      newErrors.confirmPassword = "Please confirm your password!";
+    } else if (formValues.confirmPassword !== formValues.password) {
+      newErrors.confirmPassword = "Passwords do not match!";
+    }
 
     return newErrors;
   };
 
+  // ================= SUBMIT =================
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const validationErrors = validate();
-  if (Object.keys(validationErrors).length > 0) {
-    setErrors(validationErrors);
-    return;
-  }
-  setErrors({});
+    if (loading) return; // 🔒 chặn submit 2 lần
 
-  try {
-    const res = await registerUserApi({
-      name: formValues.name,
-      email: formValues.email,
-      password: formValues.password,
-    });
-
-    console.log("REGISTER RES =", res);
-
-    const ec = Number(res?.data?.EC);
-
-    if (ec !== 0) {
-      setNotification({
-        message: res?.data?.EM || "Register failed!",
-        type: "error",
-      });
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
 
-    setNotification({
-      message: res?.data?.EM || "Register successful!",
-      type: "success",
-    });
+    setLoading(true);
 
-    setTimeout(() => {
-      window.location.href = "/login";
-    }, 800);
+    try {
+      await registerUserApi({
+        fullName: formValues.fullName,
+        email: formValues.email,
+        password: formValues.password,
+      });
 
-  } catch (error) {
-    setNotification({
-      message:
-        error?.response?.data?.EM ||
-        error?.message ||
-        "Server error!",
-      type: "error",
-    });
-  }
-};
+      // ✅ nếu không throw => SUCCESS
+      setNotification({
+        message: "Register successful!",
+        type: "success",
+      });
 
+      setTimeout(() => navigate("/login"), 800);
+    } catch (error) {
+      console.log("REGISTER ERROR =", error?.response?.data);
+
+      setNotification({
+        message:
+          error?.response?.data?.EM ||
+          error?.response?.data?.message ||
+          "Register failed!",
+        type: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ================= RENDER =================
   return (
     <div className="register-page">
-
-      {/* Notification */}
       {notification.message && (
         <div className={`notification ${notification.type}`}>
           {notification.message}
@@ -93,28 +120,29 @@ const RegisterPage = () => {
       )}
 
       <div className="register-card">
-
-        {/* LEFT SIDE */}
+        {/* LEFT */}
         <div className="register-left">
           <h1>Create Account</h1>
           <p>Join us and start your journey now.</p>
         </div>
 
-        {/* RIGHT SIDE FORM */}
+        {/* RIGHT */}
         <div className="register-right">
           <form className="register-form" onSubmit={handleSubmit}>
             <h2 className="form-title">Register</h2>
 
-            {/* Name */}
+            {/* Full Name */}
             <div className="form-group">
               <input
                 type="text"
-                name="name"
+                name="fullName"
                 placeholder="Full name"
-                value={formValues.name}
+                value={formValues.fullName}
                 onChange={handleChange}
               />
-              {errors.name && <span className="error">{errors.name}</span>}
+              {errors.fullName && (
+                <span className="error">{errors.fullName}</span>
+              )}
             </div>
 
             {/* Email */}
@@ -126,7 +154,9 @@ const RegisterPage = () => {
                 value={formValues.email}
                 onChange={handleChange}
               />
-              {errors.email && <span className="error">{errors.email}</span>}
+              {errors.email && (
+                <span className="error">{errors.email}</span>
+              )}
             </div>
 
             {/* Password */}
@@ -141,20 +171,45 @@ const RegisterPage = () => {
                 />
                 <span
                   className="password-toggle"
-                  onClick={() => setShowPassword(!showPassword)}
+                  onClick={() => setShowPassword((p) => !p)}
                 >
                   {showPassword ? <FaEye /> : <FaEyeSlash />}
                 </span>
               </div>
-              {errors.password && <span className="error">{errors.password}</span>}
+              {errors.password && (
+                <span className="error">{errors.password}</span>
+              )}
             </div>
 
-            <button className="submit-btn">Create Account</button>
+            {/* Confirm Password */}
+            <div className="form-group">
+              <div className="password-container">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  placeholder="Confirm password"
+                  value={formValues.confirmPassword}
+                  onChange={handleChange}
+                />
+                <span
+                  className="password-toggle"
+                  onClick={() => setShowPassword((p) => !p)}
+                >
+                  {showPassword ? <FaEye /> : <FaEyeSlash />}
+                </span>
+              </div>
+              {errors.confirmPassword && (
+                <span className="error">{errors.confirmPassword}</span>
+              )}
+            </div>
+
+            <button className="submit-btn" disabled={loading}>
+              {loading ? "Creating..." : "Create Account"}
+            </button>
 
             <p className="login-link">
-              Already have an account? <a href="/login">Sign In</a>
+              Already have an account? <Link to="/login">Sign In</Link>
             </p>
-
           </form>
         </div>
       </div>

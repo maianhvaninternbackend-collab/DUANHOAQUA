@@ -35,22 +35,20 @@ const AdminPage = () => {
     // Update
     const handleUpdateAdmin = async () => {
         try {
-            const res = await updateAdminApi(editAdmin._id, editAdmin.name);
-
-            if (res.EC !== 0) {
-                showNotification("error", "Lỗi", res.EM);
-                return;
-            }
+            await updateAdminApi(editAdmin._id, {
+                fullName: editAdmin.fullName,
+            });
 
             setDataSource(prev =>
                 prev.map(a =>
                     a._id === editAdmin._id
-                        ? { ...a, name: editAdmin.name }
+                        ? { ...a, fullName: editAdmin.fullName }
                         : a
                 )
             );
 
             setShowModal(false);
+
             showNotification(
                 "success",
                 "Thành công",
@@ -64,51 +62,55 @@ const AdminPage = () => {
             );
         }
     };
+
     //delete
     const handleDeleteAdmin = async (id) => {
         const ok = window.confirm("Bạn chắc chắn muốn xóa admin này?");
         if (!ok) return;
 
         try {
-            const res = await deleteAdminApi(id);
-
-            if (res.EC !== 0) {
-                showNotification("Lỗi", res.EM);
-                return;
-            }
+            await deleteAdminApi(id);
 
             setDataSource(prev => prev.filter(a => a._id !== id));
-            showNotification("Thành công", "Xóa admin thành công");
+
+            showNotification(
+                "success",
+                "Thành công",
+                "Xóa admin thành công"
+            );
         } catch (error) {
-            showNotification("Lỗi", "Không thể xóa admin");
+            showNotification(
+                "error",
+                "Lỗi",
+                "Không thể xóa admin"
+            );
         }
     };
 
-    // ===== FETCH ADMIN =====
     // ===== FETCH ADMIN =====
     useEffect(() => {
-    const fetchAdmin = async () => {
-        setLoading(true);
-        try {
-            const res = await getAdminApi({
-                search,
-                sort,
-                page,
-                limit,
-            });
+        const fetchAdmin = async () => {
+            setLoading(true);
+            try {
+                const res = await getAdminApi({
+                    search,
+                    sort,
+                    page,
+                    limit,
+                });
 
-            setDataSource(res.data.items);
-            setTotalPages(res.data.totalPages);
+                setDataSource(res.data.items);
+                setTotalPages(res.data.totalPages);
 
-        } catch (error) {
-            showNotification("error", "Lỗi", "Không thể tải admin");
-        } finally {
-            setLoading(false);
-        }
-    };
+            } catch (error) {
+                showNotification("error", "Lỗi", "Không thể tải admin");
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    fetchAdmin();
-}, [search, sort, page]);
+        fetchAdmin();
+    }, [search, sort, page]);
 
     //PAGINATION
     const renderPages = () => {
@@ -293,16 +295,14 @@ const AdminPage = () => {
                         <h3 className="modal-title">Update Admin</h3>
 
                         <div className="form-group">
-                            <label>Email</label>
-                            <input value={editAdmin.email} disabled />
-                        </div>
-
-                        <div className="form-group">
                             <label>Name</label>
                             <input
-                                value={editAdmin.name}
+                                value={editAdmin.fullName || ""}
                                 onChange={(e) =>
-                                    setEditAdmin({ ...editAdmin, name: e.target.value })
+                                    setEditAdmin({
+                                        ...editAdmin,
+                                        fullName: e.target.value,
+                                    })
                                 }
                             />
                         </div>

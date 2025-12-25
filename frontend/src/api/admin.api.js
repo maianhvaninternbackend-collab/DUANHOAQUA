@@ -10,8 +10,9 @@ export const getAdminDetailApi = (id) =>
 export const changeAdminStatusApi = (id, isActive) =>
   axiosAdmin.patch(`/api/v1/admins/${id}/status`, { isActive });
 
-export const updateAdminApi = (id, name) =>
-  axiosAdmin.put(`/api/v1/admins/${id}`, { name });
+// admin.api.js
+export const updateAdminApi = (id, data) =>
+  axiosAdmin.put(`/api/v1/admins/${id}`, data);
 
 export const deleteAdminApi = (id) =>
   axiosAdmin.delete(`/api/v1/admins/${id}`);

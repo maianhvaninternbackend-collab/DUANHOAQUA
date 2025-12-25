@@ -10,10 +10,26 @@ const {
 exports.getAdmins = async (query) => {
   const filter = { isDeleted: false };
 
+  // 🔍 SEARCH theo tên hoặc email
+  if (query.search) {
+    filter.$or = [
+      { fullName: { $regex: query.search, $options: "i" } },
+      { email: { $regex: query.search, $options: "i" } },
+    ];
+  }
+
+  // 🔃 SORT map
+  const sortMap = {
+    name_asc: { fullName: 1 },
+    name_desc: { fullName: -1 },
+    email_asc: { email: 1 },
+    email_desc: { email: -1 },
+  };
+
   const options = {
     page: query.page,
     limit: query.limit,
-    sort: query.sort,
+    sort: sortMap[query.sort] || { createdAt: -1 },
   };
 
   const [admins, total] = await adminRepo.findAll(filter, options);
@@ -23,7 +39,7 @@ exports.getAdmins = async (query) => {
     page: Number(options.page) || 1,
     limit: Number(options.limit) || 10,
     total,
-    totalPages: Math.ceil(total / (options.limit || 10)),
+    totalPages: Math.ceil(total / options.limit || 10),
   };
 };
 
@@ -42,6 +58,17 @@ exports.changeStatus = async (id, isActive) => {
   }
   return admin;
 };
+
+exports.updateAdmin = async (id, data) => {
+  const admin = await adminRepo.updateById(id, data);
+
+  if (!admin) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Admin không tồn tại");
+  }
+
+  return admin;
+};
+
 
 exports.deleteAdmin = async (id) => {
   const admin = await adminRepo.softDelete(id);

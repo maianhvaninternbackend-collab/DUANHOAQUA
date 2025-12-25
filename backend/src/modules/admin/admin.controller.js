@@ -20,6 +20,18 @@ exports.changeStatus = asyncHandler(async (req, res) => {
   res.json({ data: admin, message: "Cập nhật trạng thái thành công" });
 });
 
+exports.updateAdmin = asyncHandler(async (req, res) => {
+  const admin = await adminService.updateAdmin(
+    req.params.id,
+    req.body
+  );
+
+  res.json({
+    data: admin,
+    message: "Cập nhật admin thành công",
+  });
+});
+
 exports.deleteAdmin = asyncHandler(async (req, res) => {
   const admin = await adminService.deleteAdmin(req.params.id);
   res.json({ data: admin, message: "Xoá admin thành công" });

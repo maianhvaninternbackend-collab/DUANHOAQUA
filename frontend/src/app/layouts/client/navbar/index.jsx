@@ -163,7 +163,7 @@ const Navbar = ({ onScrollToSection })=> {
                 Đăng nhập
               </li>
               <li className="px-5 py-2.5 hover:bg-gradient-to-r hover:from-green-50 hover:to-transparent hover:text-[var(--color-green-button)] transition cursor-pointer">
-                Đăng ký
+                Đăng xuất
               </li>
             </ul>
           </div>

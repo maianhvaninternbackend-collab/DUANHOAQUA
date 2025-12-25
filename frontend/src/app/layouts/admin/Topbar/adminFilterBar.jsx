@@ -7,22 +7,7 @@ const AdminFilterBar = () => {
     <div className="filter-bar">
       {/* LEFT */}
       <div className="filter-left">
-        <button className="icon-btn">⛶</button>
-
-        <div className="filter-item">
-          Category <span className="badge">2</span>
-          <FaChevronDown className="arrow" />
-        </div>
-
-        <div className="filter-item">
-          Status <span className="badge">7</span>
-          <FaChevronDown className="arrow" />
-        </div>
-
-        <div className="filter-item">
-          Order <span className="badge">1</span>
-          <FaChevronDown className="arrow" />
-        </div>
+        <button className="icon-btn">☰</button>
       </div>
 
       {/* RIGHT */}

@@ -30,31 +30,31 @@ const UserPage = () => {
 
     // ===== FETCH USERS =====
     const fetchUsers = async () => {
-    setLoading(true);
-    try {
-        const res = await getUsersByAdminApi({
-            page,
-            limit,
-            search,
-            sort
-        });
+        setLoading(true);
+        try {
+            const res = await getUsersByAdminApi({
+                page,
+                limit,
+                search,
+                sort
+            });
 
-        if (!res || !res.data || !res.data.items) {
+            if (!res || !res.data || !res.data.items) {
+                setUsers([]);
+                setTotalPages(1);
+                return;
+            }
+
+            setUsers(res.data.items);
+            setTotalPages(res.data.totalPages || 1);
+
+        } catch (error) {
+            showNotification("Error", "Fetch user failed");
             setUsers([]);
-            setTotalPages(1);
-            return;
+        } finally {
+            setLoading(false);
         }
-
-        setUsers(res.data.items);
-        setTotalPages(res.data.totalPages || 1);
-
-    } catch (error) {
-        showNotification("Error", "Fetch user failed");
-        setUsers([]);
-    } finally {
-        setLoading(false);
-    }
-};
+    };
 
 
     useEffect(() => {
@@ -100,15 +100,12 @@ const UserPage = () => {
         if (!window.confirm("Bạn chắc chắn muốn xóa user này?")) return;
 
         try {
-            const res = await deleteUserByAdminApi(id);
-            const data = res.data;
-
-            if (data.EC !== 0) throw new Error(data.EM);
+            await deleteUserByAdminApi(id);
 
             showNotification("Success", "Xóa user thành công");
             fetchUsers();
         } catch (error) {
-            showNotification("Error", error.message || "Xóa thất bại");
+            showNotification("Error", "Xóa thất bại");
         }
     };
 

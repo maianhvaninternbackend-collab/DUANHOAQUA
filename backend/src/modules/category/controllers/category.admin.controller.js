@@ -35,7 +35,7 @@ module.exports.getCategoryDetails = async (req, res) => {
 };
 
 module.exports.createNewCategory = async (req, res) => {
-  console.log(req.body);
+  
   const { categoryName, type } = req.body;
 
   try {
@@ -58,6 +58,7 @@ module.exports.createNewCategory = async (req, res) => {
 };
 
 module.exports.updateCategory = async (req, res) => {
+ 
   const { id } = req.params;
   const { categoryName, newType } = req.body;
   try {

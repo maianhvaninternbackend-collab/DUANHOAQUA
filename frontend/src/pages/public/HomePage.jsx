@@ -4,7 +4,8 @@ import BenefitsSection from "./home/benefit_section";
 import BestSellerSection from "./home/best_seller_section";
 import FeedbackSection from "./home/feedback_section";
 import FruitHeroSection from "./home/fruit_hero_section";
-import LastedProductSection from "./home/lasted_product_section";
+// import LastedProductSection from "./home/lasted_product_section";
+import LastedProductSection from "../../features/product/components/user/LastedProductSection";
 import MixMenuSection from "./home/mixmenu_section";
 import ProductIntroSection from "./home/product_intro_section";
 

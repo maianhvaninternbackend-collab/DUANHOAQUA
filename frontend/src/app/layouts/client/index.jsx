@@ -26,7 +26,7 @@ const DefaultLayout = () => {
   
 
       <main>
-        <Outlet context={{ sectionRefs }} />
+        <Outlet context={{ sectionRefs,handleScrollToSection }} />
       </main>
 
       <Footer />

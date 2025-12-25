@@ -3,7 +3,9 @@ import { CiSearch, CiShoppingCart } from "react-icons/ci";
 import { FaRegUser } from "react-icons/fa";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllCategories } from "../../../../features/category/category.store";
 
 const Navbar = ({ onScrollToSection }) => {
   const [isSticky, setIsSticky] = useState(false);
@@ -11,7 +13,9 @@ const Navbar = ({ onScrollToSection }) => {
   const [openMix, setOpenMix] = useState(false);
   const [openShop, setOpenShop] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   useEffect(() => {
     const handleScroll = () => {
       setIsSticky(window.scrollY > 200);
@@ -19,7 +23,35 @@ const Navbar = ({ onScrollToSection }) => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+  const { listCategories, isLoading } = useSelector((state) => state.category);
 
+  useEffect(() => {
+    dispatch(fetchAllCategories());
+  }, [dispatch]);
+
+  const [searchParams] = useSearchParams();
+  const currentSearch = searchParams.get("search") || "";
+  const [searchInput, setSearchInput] = useState(currentSearch);
+
+ const handleSearch = (e) => {
+  e.preventDefault();
+  const term = searchInput.trim();
+  const currentPath = window.location.pathname; 
+
+ 
+  const targetPath = currentPath === "/category" ? "/category" : "/";
+
+  if (term) {
+    navigate(`${targetPath}?search=${encodeURIComponent(term)}`);
+  } else {
+    navigate(targetPath);
+  }
+
+ 
+  if (targetPath === "/") {
+    onScrollToSection("menuFruit");
+  }
+};
   return (
     <nav
       className={`
@@ -63,34 +95,45 @@ const Navbar = ({ onScrollToSection }) => {
         </div>
       </div>
       {isMobileSearchOpen && (
-        <div className="md:hidden px-4 mt-3">
-          <div className="relative">
+        <div className="md:hidden px-4 mt-3 pb-2 transition-all duration-300">
+          <form
+            onSubmit={(e) => {
+              handleSearch(e);
+              setIsMobileSearchOpen(false);
+            }}
+            className="relative flex items-center"
+          >
             <input
               type="text"
+              key={currentSearch}
+              defaultValue={currentSearch}
+              onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Tìm kiếm trái cây..."
               className="
           w-full
-          rounded-lg
+          rounded-full
           border border-gray-300
           bg-white
-          px-4 py-2
+          pl-4 pr-10 py-2.5
           text-sm
-          shadow
+          shadow-sm
           focus:outline-none
           focus:ring-2
-          focus:ring-[var(--color-green-button)]
+          focus:ring-[#49a760]
         "
             />
-            <button className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
-              <CiSearch className="size-4" />
+            <button
+              type="submit"
+              className="absolute right-1.5 p-1.5 bg-[#49a760] text-white rounded-full active:scale-90 transition-transform"
+            >
+              <CiSearch className="size-5" />
             </button>
-          </div>
+          </form>
         </div>
       )}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-[#f8f7f2] border-t border-gray-200">
           <ul className="flex flex-col px-4 py-4 text-sm">
-            {/* MAIN MENU */}
             <li className="py-2 font-medium">Home</li>
 
             <li
@@ -107,7 +150,6 @@ const Navbar = ({ onScrollToSection }) => {
               Menu hoa quả
             </li>
 
-            {/* MIX */}
             <li
               className="flex items-center justify-between py-2 font-medium"
               onClick={() => setOpenMix(!openMix)}
@@ -120,9 +162,24 @@ const Navbar = ({ onScrollToSection }) => {
 
             {openMix && (
               <ul className="ml-4 mb-2 space-y-1 text-gray-600">
-                <li className="py-1">Mix 3 loại</li>
-                <li className="py-1">Mix 4 loại</li>
-                <li className="py-1">Mix 5 loại</li>
+                {isLoading
+                  ? [1, 2, 3].map((i) => (
+                      <li
+                        key={i}
+                        className="py-2 h-4 w-24 bg-gray-200 animate-pulse rounded"
+                      ></li>
+                    ))
+                  : listCategories
+                      .filter((cat) => cat.type === "mix")
+                      .map((cat) => (
+                        <li
+                          key={cat._id}
+                          className="py-1 cursor-pointer"
+                         onClick={() => navigate(`/category?category=${cat.slug}`)}
+                        >
+                          {cat.name}
+                        </li>
+                      ))}
               </ul>
             )}
 
@@ -133,7 +190,6 @@ const Navbar = ({ onScrollToSection }) => {
               Feedback
             </li>
 
-            {/* SHOP */}
             <li
               className="flex items-center justify-between py-2 font-medium"
               onClick={() => setOpenShop(!openShop)}
@@ -146,17 +202,31 @@ const Navbar = ({ onScrollToSection }) => {
 
             {openShop && (
               <ul className="ml-4 mb-2 space-y-1 text-gray-600">
-                <li className="py-1">Hoa quả nhiệt đới</li>
-                <li className="py-1">Hoa quả ôn đới</li>
-                <li className="py-1">Hoa quả nhập khẩu</li>
+                {isLoading
+                  ? // Hiển thị 3 dòng loading giả
+                    [1, 2, 3].map((i) => (
+                      <li
+                        key={i}
+                        className="py-2 h-4 w-24 bg-gray-200 animate-pulse rounded"
+                      ></li>
+                    ))
+                  : listCategories
+                      .filter((cat) => cat.type === "single")
+                      .map((cat) => (
+                        <li
+                          key={cat._id}
+                          className="py-1 cursor-pointer"
+                         onClick={() => navigate(`/category?category=${cat.slug}`)}
+                        >
+                          {cat.name}
+                        </li>
+                      ))}
               </ul>
             )}
 
-            {/* AUTH */}
             <li className="border-t mt-3 pt-3 py-2 font-medium">Đăng nhập</li>
             <li className="py-2 font-medium">Đăng ký</li>
 
-            {/* CONTACT */}
             <li className="border-t mt-4 pt-4 space-y-2 text-xs text-gray-600">
               <div className="flex items-center gap-2">
                 <span>📞</span>
@@ -180,16 +250,13 @@ const Navbar = ({ onScrollToSection }) => {
         </div>
       )}
 
-      {/* ================= DESKTOP MENU ================= */}
       <ul className="hidden md:flex w-full mx-auto justify-center items-center gap-6 lg:gap-10 xl:gap-14">
-        {/* HOME */}
-        <li className="relative group flex items-center gap-0.5 font-bold cursor-pointer">
-          Home <MdKeyboardArrowDown />
-          <Dropdown>
-            <DropdownItem text="Trang chủ 1" />
-            <DropdownItem text="Trang chủ 2" />
-            <DropdownItem text="Landing" />
-          </Dropdown>
+        <li
+          className="relative flex items-center gap-0.5 font-bold cursor-pointer hover:text-[#49a760] transition-colors"
+          onClick={() => navigate("/")}
+        >
+          Home
+          <MdKeyboardArrowDown />
         </li>
 
         <li
@@ -206,14 +273,27 @@ const Navbar = ({ onScrollToSection }) => {
           Menu hoa quả
         </li>
 
-        {/* MIX */}
         <li className="relative group flex items-center gap-0.5 cursor-pointer">
           Hộp mix <MdKeyboardArrowDown />
-          <Dropdown>
-            <DropdownItem text="Mix 3 loại" />
-            <DropdownItem text="Mix 4 loại" />
-            <DropdownItem text="Mix 5 loại" />
-          </Dropdown>
+          <ul className="absolute top-full left-0 mt-2 w-48 bg-white shadow-xl border border-gray-100 rounded-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+            {isLoading ? (
+              <li className="px-5 py-2 text-gray-400 animate-pulse text-xs">
+                Đang tải...
+              </li>
+            ) : (
+              listCategories
+                .filter((cat) => cat.type === "mix")
+                .map((cat) => (
+                  <li
+                    key={cat._id}
+                   onClick={() => navigate(`/category?category=${cat.slug}`)}
+                    className="px-5 py-2.5 hover:bg-green-50 hover:text-[#49a760] transition-colors cursor-pointer text-sm font-normal"
+                  >
+                    {cat.name}
+                  </li>
+                ))
+            )}
+          </ul>
         </li>
 
         <li
@@ -223,36 +303,62 @@ const Navbar = ({ onScrollToSection }) => {
           Feedback
         </li>
 
-        {/* SHOP */}
         <li className="relative group flex items-center gap-0.5 cursor-pointer">
           Shop <MdKeyboardArrowDown />
-          <Dropdown>
-            <DropdownItem text="Hoa quả nhiệt đới" />
-            <DropdownItem text="Hoa quả ôn đới" />
-            <DropdownItem text="Hoa quả nhập khẩu" />
-          </Dropdown>
+          <ul className="absolute top-full left-0 mt-2 w-48 bg-white shadow-xl border border-gray-100 rounded-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+            {isLoading ? (
+              <li className="px-5 py-2 text-gray-400 animate-pulse text-xs">
+                Đang tải...
+              </li>
+            ) : (
+              listCategories
+                .filter((cat) => cat.type === "single")
+                .map((cat) => (
+                  <li
+                    key={cat._id}
+                   onClick={() => navigate(`/category?category=${cat.slug}`)}
+                    className="px-5 py-2.5 hover:bg-green-50 hover:text-[#49a760] transition-colors cursor-pointer text-sm font-normal"
+                  >
+                    {cat.name}
+                  </li>
+                ))
+            )}
+          </ul>
         </li>
 
-        {/* CONTACT */}
         <li className="relative pe-6 after:absolute after:right-[-16px] after:top-0 after:bottom-0 after:w-px after:bg-gray-300">
           Contact
         </li>
 
-        {/* ICONS */}
         <li className="relative flex gap-3 items-center">
-          {/* SEARCH */}
           <div className="relative group">
             <CiSearch className="size-7 cursor-pointer" />
-            <div className="absolute right-0 top-10 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-              <input
-                type="text"
-                placeholder="Tìm kiếm trái cây..."
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm shadow-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-green-button)]"
-              />
+            <div className="absolute right-0 top-10 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-2">
+              <div className="relative flex items-center">
+                <form
+                  onSubmit={handleSearch}
+                  className="relative flex items-center w-full"
+                >
+                  <input
+                    key={currentSearch}
+                    type="text"
+                    defaultValue={currentSearch}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    placeholder="Tìm kiếm trái cây..."
+                    className="w-full rounded-full border border-gray-200 bg-white pl-4 pr-12 py-2.5 text-sm shadow-xl focus:outline-none focus:ring-2 focus:ring-[#49a760] transition-all"
+                  />
+
+                  <button
+                    type="submit"
+                    className="absolute right-1 p-2 text-white bg-[#49a760] rounded-full hover:bg-[#3d8b50] transition-colors active:scale-95 flex items-center justify-center"
+                  >
+                    <CiSearch size={20} strokeWidth={1} />
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
 
-          {/* CART */}
           <div className="relative">
             <CiShoppingCart
               className="size-7 cursor-pointer"
@@ -281,9 +387,6 @@ const Navbar = ({ onScrollToSection }) => {
 };
 
 export default Navbar;
-
-/* ================= DROPDOWN ================= */
-
 const Dropdown = ({ children, align = "left" }) => (
   <ul
     className={`

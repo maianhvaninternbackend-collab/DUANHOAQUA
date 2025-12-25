@@ -377,7 +377,8 @@ const Navbar = ({ onScrollToSection }) => {
             </span>
             <Dropdown align="right">
               <DropdownItem text="Đăng nhập" />
-              <DropdownItem text="Đăng ký" />
+           
+     
             </Dropdown>
           </div>
         </li>

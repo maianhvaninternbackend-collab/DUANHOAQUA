@@ -8,43 +8,59 @@ const {
   verifyRefreshToken,
 } = require("../../helpers/jwt.auth");
 
-exports.login = async ({ email, password }) => {
-  const user = await authRepo.findByEmailForLogin(email);
-  if (!user) throw new ApiError(httpStatus.UNAUTHORIZED, "Sai Email hoặc mật khẩu");
+exports.login = async ({ email, password }, type = "user") => {
+  const user = await authRepo.findByEmailForLogin(email, type);
+  if (!user)
+    throw new ApiError(httpStatus.UNAUTHORIZED, "Sai Email hoặc mật khẩu");
 
   const ok = await comparePassword(password, user.passwordHash);
-  if (!ok) throw new ApiError(httpStatus.UNAUTHORIZED, "Sai Email hoặc mật khẩu");
+  if (!ok)
+    throw new ApiError(httpStatus.UNAUTHORIZED, "Sai Email hoặc mật khẩu");
 
   return {
-    user: { id: user._id, fullName: user.fullName, email: user.email, role: user.role },
-    accessToken: generateAccessToken(user),
-    refreshToken: signRefreshToken(user),
+    user: {
+      id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      role: type === "admin" ? "admin" : "user",
+    },
+    accessToken: generateAccessToken({
+      ...user.toObject(),
+      role: type === "admin" ? "admin" : "user",
+    }),
+    refreshToken: signRefreshToken({
+      ...user.toObject(),
+      role: type === "admin" ? "admin" : "user",
+    }),
   };
 };
 
-exports.register = async ({ fullName, email, password }) => {
-  const existing = await authRepo.findAnyByEmail(email);
+
+exports.register = async ({ fullName, email, password }, type = "user") => {
+  const existing = await authRepo.findAnyByEmail(email, type);
   if (existing && !existing.isDeleted) {
     throw new ApiError(httpStatus.CONFLICT, "Email đã tồn tại");
   }
 
   const passwordHash = await hashPassword(password);
-  let user;
 
-  if (existing && existing.isDeleted) {
-    existing.fullName = fullName;
-    existing.passwordHash = passwordHash;
-    existing.isDeleted = false;
-    existing.isActive = true;
-    user = await existing.save();
-  } else {
-    user = await authRepo.createUser({ fullName, email, passwordHash });
-  }
+  const user = await authRepo.createAccount(
+    {
+      fullName,
+      email,
+      passwordHash,
+      role: type === "admin" ? "admin" : "user",
+    },
+    type
+  );
 
   return {
-    user: { id: user._id, fullName: user.fullName, email: user.email, role: user.role },
-    accessToken: generateAccessToken(user),
-    refreshToken: signRefreshToken(user),
+    user: {
+      id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role,
+    },
   };
 };
 

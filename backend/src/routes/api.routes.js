@@ -45,4 +45,7 @@ router.use("/products", require("../modules/product/product.routes"));
  * router.use("/upload", require("../modules/upload/upload.routes"));
  */
 
+router.use("/admins", require("../modules/admin/admin.routes"));
+
+
 module.exports = router;

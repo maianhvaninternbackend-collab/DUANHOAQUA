@@ -1,5 +1,14 @@
 const LiIcon = ({ icon, alt, text }) => {
   return (
+<<<<<<< HEAD
+    <li className="flex items-center gap-5">
+      <img src={icon} alt={alt} />
+      {text}
+    </li>
+  );
+};
+export default LiIcon;
+=======
     <li className="flex items-center gap-3 lg:gap-5 font-medium text-gray-700">
       <img src={icon} alt={alt} className="size-8 lg:size-auto object-contain" />
       <span className="text-sm lg:text-base">{text}</span>
@@ -7,3 +16,4 @@ const LiIcon = ({ icon, alt, text }) => {
   );
 };
 export default LiIcon;
+>>>>>>> main

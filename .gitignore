@@ -1,18 +1,36 @@
-# ===== Node / JS =====
+# ======================
+# Node.js
+# ======================
 node_modules/
+**/node_modules/
 
-# ===== Env =====
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ======================
+# Environment variables
+# ======================
 .env
+.env.*
+!.env.example
 
-# ===== Build =====
+# ======================
+# Build output
+# ======================
 dist/
 build/
 
-# ===== Logs =====
-npm-debug.log*
-yarn-debug.log*
-pnpm-debug.log*
-
-# ===== OS =====
+# ======================
+# OS
+# ======================
 .DS_Store
 Thumbs.db
+
+# ======================
+# IDE
+# ======================
+.vscode/
+.idea/

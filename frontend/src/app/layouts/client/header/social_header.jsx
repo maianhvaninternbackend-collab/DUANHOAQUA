@@ -1,3 +1,4 @@
+
 const SocialHeader = ({ icon, alt = "social icon" }) => {
   return (
     <button
@@ -15,6 +16,7 @@ const SocialHeader = ({ icon, alt = "social icon" }) => {
     >
       <img src={icon} alt={alt} className="w-4 h-4" />
     </button>
+
   );
 };
 export default SocialHeader;

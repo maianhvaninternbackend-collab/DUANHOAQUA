@@ -22,8 +22,12 @@ axiosUser.interceptors.request.use(
 
 axiosUser.interceptors.response.use(onFulfilled, onRejected);
 
-// ===== ADMIN AXIOS =====
-export const axiosAdmin = axios.create({ baseURL });
+
+export const axiosAdmin = axios.create({ baseURL, headers: {
+    "Cache-Control": "no-store",
+  }, });
+
+
 
 axiosAdmin.interceptors.request.use(
   (config) => {

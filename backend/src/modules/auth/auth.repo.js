@@ -1,15 +1,23 @@
 const User = require("../user/user.model");
+const Admin = require("../admin/admin.model");
 
-exports.findByEmailForLogin = (email) => {
-  return User.findOne({ email, isDeleted: false })
+exports.findByEmailForLogin = (email, type = "user") => {
+  const Model = type === "admin" ? Admin : User;
+  return Model.findOne({ email, isDeleted: false })
     .select("+passwordHash");
 };
 
-exports.findAnyByEmail = (email) =>
-  User.findOne({ email });
+exports.findAnyByEmail = (email, type = "user") => {
+  const Model = type === "admin" ? Admin : User;
+  return Model.findOne({ email });
+};
 
-exports.findById = (id) =>
-  User.findOne({ _id: id, isDeleted: false });
+exports.findById = (id, type = "user") => {
+  const Model = type === "admin" ? Admin : User;
+  return Model.findOne({ _id: id, isDeleted: false });
+};
 
-exports.createUser = (payload) =>
-  User.create(payload);
+exports.createAccount = (payload, type = "user") => {
+  const Model = type === "admin" ? Admin : User;
+  return Model.create(payload);
+};

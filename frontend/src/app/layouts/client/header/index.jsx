@@ -10,6 +10,7 @@ const Header = () => {
   return (
     <>
       <header>
+
         <div className="container mx-auto pb-10">
           <div className="flex flex-col md:flex-row items-center justify-center gap-x-6 gap-y-4">
             {/* Logo */}
@@ -52,6 +53,7 @@ const Header = () => {
                 />
               </div>
             </div>
+
           </div>
         </div>
       </header>

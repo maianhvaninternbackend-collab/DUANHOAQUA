@@ -10,6 +10,7 @@ module.exports.getAllCategoriesService = async (
     const pageNum = Number(page) || 1;
     const limitNum = Number(limit) || 10;
     const skip = (pageNum - 1) * limitNum;
+
     const query = {
       ...extraFilter,
       isDeleted: false,
@@ -28,13 +29,16 @@ module.exports.getAllCategoriesService = async (
 
     const sortOptions = sortMap[sort] || { createdAt: -1 };
 
-    const totalItems = await Category.countDocuments(query);
+    const [categories, totalItems] = await Promise.all([
+      Category.find(query)
+        .select("-__v")
+        .sort(sortOptions)
+        .skip(skip)
+        .limit(limitNum),
+      Category.countDocuments(query),
+    ]);
 
-    const categories = await Category.find(query)
-      .select("-__v")
-      .sort(sortOptions)
-      .skip(skip)
-      .limit(limitNum);
+    const totalPages = Math.ceil(totalItems / limitNum);
 
     return {
       EC: 0,
@@ -42,23 +46,24 @@ module.exports.getAllCategoriesService = async (
       DT: {
         categories,
         totalItems,
+        totalPages,
         page: pageNum,
         limit: limitNum,
       },
     };
   } catch (error) {
-    console.log("getAllCategoriesService error:", error);
+    console.error("getAllCategoriesService error:", error);
     return {
       EC: -1,
-      EM: "Lỗi server khi lấy danh sách danh mục"+error.message,
+      EM: "Lỗi server khi lấy danh sách danh mục: " + error.message,
       DT: {
         categories: [],
         totalItems: 0,
+        totalPages: 0,
       },
     };
   }
 };
-
 module.exports.getCategoryById = async (_id) => {
   try {
     const category = await Category.findOne({ _id }).select("-__v");
@@ -133,6 +138,8 @@ module.exports.updateCategoryService = async (
   newName,
   newType = "single"
 ) => {
+  console.log("thông tin=>>>>>>", id, newName, newType);
+
   if (!id || !newName) {
     return {
       EC: 1,
@@ -169,7 +176,7 @@ module.exports.updateCategoryService = async (
         EM: `Danh mục "${trimmedName}" đã tồn tại.`,
       };
     }
-
+   
     const updatedCategory = await Category.findByIdAndUpdate(
       id,
       { name: trimmedName },
@@ -279,9 +286,7 @@ module.exports.toggleCategoryActiveService = async (id) => {
 
     return {
       EC: 0,
-      EM: `Danh mục đã được ${
-        category.isActive ? "kích hoạt" : "vô hiệu hóa"
-      }`,
+      EM: `Danh mục đã được ${category.isActive ? "kích hoạt" : "vô hiệu hóa"}`,
       DT: category,
     };
   } catch (error) {

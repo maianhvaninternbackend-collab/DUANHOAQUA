@@ -1,9 +1,13 @@
-import favorite_icon from "../../../assets/icons/favorite_icon.png";
+import favorite_icon from "../../../../assets/icons/favorite_icon.png";
 
 const ProductComponent = ({ img, num, title, description, showDetails }) => {
   return (
-    <div onClick={showDetails} className="bg-white w-full max-w-[280px] md:min-w-[240px] rounded-xl relative shadow-md overflow-hidden flex-shrink-1 transition-all hover:shadow-xl">
-      <div className="h-[250px] md:h-[300px] overflow-hidden">
+    <div
+      onClick={showDetails}
+      className="bg-white w-full max-w-[280px] md:min-w-[240px] rounded-xl relative shadow-md overflow-hidden flex-shrink-1 transition-all hover:shadow-xl cursor-pointer"
+    >
+      {/* 1. PHẦN ẢNH - Cố định chiều cao */}
+      <div className="h-[250px] md:h-[300px] overflow-hidden relative">
         <img
           src={img}
           alt={title}
@@ -11,11 +15,15 @@ const ProductComponent = ({ img, num, title, description, showDetails }) => {
         />
       </div>
 
-      {/* Giữ nguyên Badge đúng vị trí cũ */}
-      <div className="bg-[#c4cd38] rounded-lg absolute bottom-[120px] sm:bottom-36 right-5 text-white font-montserrat text-3xl font-extrabold size-15 flex items-center justify-center shadow-md">
-        {num}
+      {/* 2. HỘP SỐ - Neo bằng TOP để luôn nằm đúng vị trí mép ảnh */}
+      {/* - Mobile: Ảnh cao 250px -> top 220px (đè lên mép ảnh 30px)
+          - Desktop (md): Ảnh cao 300px -> top 270px 
+      */}
+      <div className="bg-[#c4cd38] rounded-lg absolute top-[220px] md:top-[270px] right-5 text-white font-montserrat text-3xl font-extrabold size-15 flex items-center justify-center shadow-md z-10">
+        {num+1<10?(`0${num+1}`):(num+1)}
       </div>
 
+      {/* 3. PHẦN NỘI DUNG - Chiều cao co giãn tùy ý mà không ảnh hưởng hộp số */}
       <div className="p-4 md:p-5 space-y-4">
         <h3 className="font-bold uppercase text-base md:text-lg text-gray-800 line-clamp-1">
           {title}

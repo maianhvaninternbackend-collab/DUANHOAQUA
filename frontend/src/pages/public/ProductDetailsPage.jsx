@@ -1,74 +1,106 @@
-import React, { useState } from "react";
-import { Rate } from "antd";
+import React, { useState, useEffect } from "react";
+import { Rate, Spin } from "antd"; 
 import { FaShoppingCart, FaHeart, FaTruck, FaShieldAlt } from "react-icons/fa";
-import product_dua_luoi from "../../assets/product_dua_luoi.png"
-const ProductDetails = ({ product }) => {
-  // Mock data nếu không có props truyền vào
-  const data = product || {
-    name: "Dưa Lưới Fuji Nhật Bản",
-    price: "150.000đ",
-    oldPrice: "180.000đ",
-    rating: 5,
-    description: "Dưa lưới Fuji được trồng theo công nghệ Nhật Bản, có vị ngọt thanh, thơm đặc trưng và giòn tan trong từng miếng. Sản phẩm đã được gọt sẵn, đóng hộp tiện lợi, đảm bảo tươi ngon đến tay khách hàng.",
-    image: product_dua_luoi, // Thay bằng image dưa lưới của bạn
-    benefits: [
-      "Gọt sẵn tiện lợi, dùng ngay",
-      "Nguồn gốc rõ ràng, đạt chuẩn VietGAP",
-      "Giàu Vitamin C và chất xơ",
-    ]
-  };
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProductDetailBySlug, clearCurrentProduct } from "../../features/product/product_slice";
 
+const ProductDetails = () => {
+  const { slug } = useParams();
+  const dispatch = useDispatch();
   const [quantity, setQuantity] = useState(1);
+
+  
+  const { currentProduct, isLoading, error } = useSelector((state) => state.product);
+
+  useEffect(() => {
+    if (slug) {
+      dispatch(fetchProductDetailBySlug(slug));
+    }
+
+   
+    return () => {
+      dispatch(clearCurrentProduct());
+    };
+  }, [slug, dispatch]);
+
+  
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Spin size="large" tip="Đang tải thông tin sản phẩm..." />
+      </div>
+    );
+  }
+
+  // Xử lý lỗi hoặc không tìm thấy sản phẩm
+  if (error || !currentProduct) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-500">
+        {error || "Không tìm thấy sản phẩm này!"}
+      </div>
+    );
+  }
 
   return (
     <section className="bg-white min-h-screen pt-28 pb-10 px-4 md:px-10 lg:px-20">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row gap-10 lg:gap-16">
           
-          {/* --- CỘT TRÁI: HÌNH ẢNH (Desktop: w-1/2) --- */}
+          {/* --- CỘT TRÁI: HÌNH ẢNH --- */}
           <div className="w-full lg:w-1/2">
             <div className="relative aspect-square rounded-3xl overflow-hidden shadow-sm border border-gray-100">
               <img 
-                src={data.image} 
-                alt={data.name} 
+                src={currentProduct.image?.url} // Lấy URL từ Cloudinary
+                alt={currentProduct.name} 
                 className="w-full h-full object-cover"
               />
-              {/* Badge giảm giá tương tự style num của bạn */}
               <div className="absolute top-5 left-5 bg-[#c4cd38] text-white font-bold px-4 py-2 rounded-lg shadow-md">
-                HOT
+                {currentProduct.sold > 10 ? "BÁN CHẠY" : "NEW"}
               </div>
             </div>
           </div>
 
-          {/* --- CỘT PHẢI: THÔNG TIN (Desktop: w-1/2) --- */}
+          {/* --- CỘT PHẢI: THÔNG TIN --- */}
           <div className="w-full lg:w-1/2 space-y-6">
             <div className="space-y-2">
               <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 uppercase tracking-tight">
-                {data.name}
+                {currentProduct.name}
               </h1>
               <div className="flex items-center gap-4">
-                <Rate disabled defaultValue={data.rating} className="text-orange-400 text-sm" />
-                <span className="text-gray-400 text-sm">(25 đánh giá từ khách hàng)</span>
+                <Rate disabled value={currentProduct.rating} className="text-orange-400 text-sm" />
+                <span className="text-gray-400 text-sm">
+                   (Danh mục: {currentProduct.category?.name || "Đang cập nhật"})
+                </span>
               </div>
             </div>
 
             <div className="flex items-baseline gap-4">
-              <span className="text-3xl font-bold text-[#49a760]">{data.price}</span>
-              <span className="text-xl text-gray-400 line-through">{data.oldPrice}</span>
+              <span className="text-3xl font-bold text-[#49a760]">
+                {currentProduct.price?.toLocaleString()}đ
+              </span>
+              {/* Nếu có giá cũ thì hiện, không thì ẩn */}
+              {currentProduct.oldPrice && (
+                <span className="text-xl text-gray-400 line-through">
+                  {currentProduct.oldPrice?.toLocaleString()}đ
+                </span>
+              )}
             </div>
 
             <p className="text-gray-600 leading-relaxed border-l-4 border-[#c4cd38] pl-4 italic">
-              {data.description}
+              {currentProduct.description || "Chưa có mô tả chi tiết cho sản phẩm này."}
             </p>
 
-            {/* Lợi ích ngắn gọn */}
+            {/* Lợi ích sản phẩm (Bạn có thể fix cứng hoặc lấy từ DB nếu có field này) */}
             <ul className="space-y-3 pt-2">
-              {data.benefits.map((benefit, index) => (
-                <li key={index} className="flex items-center gap-3 text-sm font-medium text-gray-700">
-                  <div className="size-2 rounded-full bg-[#49a760]" />
-                  {benefit}
-                </li>
-              ))}
+              <li className="flex items-center gap-3 text-sm font-medium text-gray-700">
+                <div className="size-2 rounded-full bg-[#49a760]" />
+                Sản phẩm đạt chuẩn VietGAP
+              </li>
+              <li className="flex items-center gap-3 text-sm font-medium text-gray-700">
+                <div className="size-2 rounded-full bg-[#49a760]" />
+                Không chất bảo quản, cực kỳ tươi ngon
+              </li>
             </ul>
 
             {/* Chọn số lượng & Mua ngay */}
@@ -85,7 +117,7 @@ const ProductDetails = ({ product }) => {
                 >+</button>
               </div>
               
-              <button className="flex-1 bg-(--color-green-button) text-white font-bold uppercase py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-[#153a2e] transition-all shadow-lg active:scale-95">
+              <button className="flex-1 bg-[#153a2e] text-white font-bold uppercase py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-[#1d4d3d] transition-all shadow-lg active:scale-95">
                 <FaShoppingCart /> Thêm vào giỏ hàng
               </button>
               

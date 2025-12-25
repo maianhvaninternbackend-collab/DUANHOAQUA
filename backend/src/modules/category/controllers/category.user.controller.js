@@ -12,6 +12,7 @@ module.exports.getAllCategories = async (req, res) => {
       sort,
       page,
       limit,
+     
       filter
     );
     return res.status(200).json(result);

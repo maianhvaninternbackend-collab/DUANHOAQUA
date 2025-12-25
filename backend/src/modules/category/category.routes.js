@@ -15,7 +15,7 @@ route.post(
   adminOnly,
   categoryAdminController.createNewCategory
 );
-route.put("/edit", auth, adminOnly, categoryAdminController.updateCategory);
+route.put("/edit/:id", auth, adminOnly, categoryAdminController.updateCategory);
 route.delete(
   "/delete/:id",
   auth,

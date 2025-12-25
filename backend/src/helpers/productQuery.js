@@ -1,12 +1,12 @@
-module.exports = ({ search, categoryId, isActive }) => {
+module.exports = ({ search, category, isActive }) => {
   const query = { isDeleted: false };
 
   if (search) {
     query.name = { $regex: search, $options: "i" };
   }
 
-  if (categoryId) {
-    query.category = categoryId;
+ if (category && category !== "all" && category !== "") {
+    query.category = category;
   }
 
   if (isActive !== undefined) {

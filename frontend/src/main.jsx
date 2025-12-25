@@ -1,22 +1,28 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-// import { StrictMode } from "react";
-// import { createRoot } from "react-dom/client";
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
+import { Provider } from "react-redux";
 
-import { AdminAuthWrapper } from "./app/context/admin.auth.context.jsx";
-import { UserAuthWrapper } from "./app/context/user.auth.context.jsx";
 import App from "./App.jsx";
 import "./index.css";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <UserAuthWrapper>
-      <AdminAuthWrapper>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </AdminAuthWrapper>
-    </UserAuthWrapper>
-  </React.StrictMode>
+import ScrollToTop from "./features/product/hooks/ScrollToTop.jsx";
+import { store } from "./app/store/store.js";
+
+import { AdminAuthWrapper } from "./app/context/admin.auth.context.jsx";
+import { UserAuthWrapper } from "./app/context/user.auth.context.jsx";
+
+createRoot(document.getElementById("root")).render(
+  <StrictMode>
+    <Provider store={store}>
+      <UserAuthWrapper>
+        <AdminAuthWrapper>
+          <BrowserRouter>
+            <ScrollToTop />
+            <App />
+          </BrowserRouter>
+        </AdminAuthWrapper>
+      </UserAuthWrapper>
+    </Provider>
+  </StrictMode>
 );

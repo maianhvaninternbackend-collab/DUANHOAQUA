@@ -10,6 +10,7 @@ const onRejected = (error) => {
 
 // ===== USER AXIOS =====
 export const axiosUser = axios.create({ baseURL });
+
 axiosUser.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("access_token");
@@ -21,10 +22,12 @@ axiosUser.interceptors.request.use(
 
 axiosUser.interceptors.response.use(onFulfilled, onRejected);
 
-// ===== ADMIN AXIOS =====
+
 export const axiosAdmin = axios.create({ baseURL, headers: {
     "Cache-Control": "no-store",
   }, });
+
+
 
 axiosAdmin.interceptors.request.use(
   (config) => {

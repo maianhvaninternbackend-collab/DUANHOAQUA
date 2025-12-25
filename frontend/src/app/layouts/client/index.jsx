@@ -8,7 +8,9 @@ import { useRef } from "react";
 const DefaultLayout = () => {
   const sectionRefs = {
     bestSeller: useRef(null),
-    menuFruit:useRef(null),
+
+    menuFruit: useRef(null),
+
     feedback: useRef(null),
     contact: useRef(null),
   };
@@ -20,12 +22,15 @@ const DefaultLayout = () => {
   };
   return (
     <>
-      <Header />
 
-      <Navbar onScrollToSection={handleScrollToSection} />
+      
+        <Header />
+        <Navbar onScrollToSection={handleScrollToSection} />
+  
 
       <main>
-        <Outlet context={{ sectionRefs }} />
+        <Outlet context={{ sectionRefs,handleScrollToSection }} />
+
       </main>
 
       <Footer />

@@ -1,11 +1,14 @@
+
 import { Navigate } from "react-router-dom";
 // import { RouterProvider } from "react-router-dom";
 // import React from 'react'
 // import ReactDOM from 'react-dom/client'
+
 import PublicLayout from "../../layouts/client/index";
 
 // pages (public)
 import HomePage from "../../../pages/public/HomePage";
+
 import LoginPage from '../../../features/login/user/login.jsx';
 import RegisterPage from '../../../features/register/user/register.jsx';
 
@@ -19,6 +22,11 @@ import CategoryManagement from '../../../pages/admin/categorymanagement/category
 // import { AdminAuthWrapper } from '../../context/admin.auth.context.jsx';
 // import { UserAuthWrapper } from '../../context/user.auth.context.jsx';
 import ProtectedAdminRoute from '../guards/protectedAdminRoute.jsx';
+
+import ProductDetails from "../../../pages/public/ProductDetailsPage";
+import CartPage from "../../../pages/public/CartPage";
+import ShopPage from "../../../pages/public/ShopPage";
+
 // sau này mở rộng:
 // import AboutPage from "@/pages/public/AboutPage";
 // import ContactPage from "@/pages/public/ContactPage";
@@ -28,9 +36,20 @@ const publicRoutes = [
     element: <PublicLayout />,
     children: [
       {
+
         index: true,          
         element: <HomePage />,
       },
+
+      
+      {
+        path: "/details/:slug",
+        element: <ProductDetails />,
+      },
+      { path: "/cart", element: <CartPage /> },
+      { path: "/category", element: <ShopPage /> },
+
+
       // ===== MỞ RỘNG SAU =====
       // {
       //   path: "about",
@@ -42,6 +61,7 @@ const publicRoutes = [
       // },
     ],
   },
+
    // ===== ADMIN PUBLIC =====
   {
     path: "/admin/login",
@@ -71,6 +91,7 @@ const publicRoutes = [
       { path: "category", element: <CategoryManagement /> },
     ],
   },
+ 
 ];
 
 export default publicRoutes;

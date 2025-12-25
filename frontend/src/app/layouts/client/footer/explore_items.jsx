@@ -5,9 +5,9 @@ const ExploreItem = ({ text }) => {
     <li>
       <a
         href="#"
-        className="inline-flex items-center gap-2 text-sm text-[#828078] transition hover:opacity-75"
+        className="flex items-center gap-2 text-sm text-[#828078] transition hover:text-[#4baf46] hover:translate-x-1 duration-300"
       >
-        <img src={explore_icon} alt="" />
+        <img src={explore_icon} alt="" className="size-3" />
         {text}
       </a>
     </li>

@@ -34,7 +34,8 @@ router.use("/auth", require("../modules/auth/auth.routes"));
  * /api/v1/users/me/change-password
  */
 router.use("/users", require("../modules/user/user.routes"));
-
+router.use("/categories", require("../modules/category/category.routes"));
+router.use("/products", require("../modules/product/product.routes"));
 /**
  * =========================
  * (TƯƠNG LAI)
@@ -43,6 +44,8 @@ router.use("/users", require("../modules/user/user.routes"));
  * router.use("/categories", require("../modules/category/category.routes"));
  * router.use("/upload", require("../modules/upload/upload.routes"));
  */
+
 router.use("/admins", require("../modules/admin/admin.routes"));
+
 
 module.exports = router;

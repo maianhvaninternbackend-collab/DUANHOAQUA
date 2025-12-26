@@ -31,9 +31,14 @@ exports.findAll = (filter = {}, options = {}) => {
 
 // ===== COMMAND =====
 exports.updateById = (id, data) => {
-    return User.findByIdAndUpdate(id, data, {
-        new: true
-    });
+  return User.findByIdAndUpdate(
+    id,
+    { $set: data },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
 };
 
 exports.incrementAuthzVersion = (id) => {

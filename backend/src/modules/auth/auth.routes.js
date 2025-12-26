@@ -7,8 +7,8 @@ const { validate } = require("../../middlewares/validate.middleware");
 // ===== USER =====
 router.post(
   "/login",
-  loginSlowDown,
-  loginLimiter,
+  // loginSlowDown,
+  // loginLimiter,
   validate(schema.login),
   controller.loginUser
 );

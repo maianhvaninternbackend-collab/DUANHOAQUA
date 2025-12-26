@@ -72,10 +72,19 @@ exports.deleteUser = async (id) => {
 };
 // ===== USER =====
 exports.updateProfile = async (userId, data) => {
-  const user = await userRepo.updateById(userId, data);
+  const { fullName, phone } = data;
+
+  const updateData = {};
+
+  if (fullName) updateData.fullName = fullName;
+  if (phone) updateData.phone = phone;
+
+  const user = await userRepo.updateById(userId, updateData);
+
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "User không tồn tại");
   }
+
   return user;
 };
 

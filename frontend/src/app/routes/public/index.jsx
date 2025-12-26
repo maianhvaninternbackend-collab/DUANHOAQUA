@@ -26,6 +26,8 @@ import ProtectedAdminRoute from '../guards/protectedAdminRoute.jsx';
 import ProductDetails from "../../../pages/public/ProductDetailsPage";
 import CartPage from "../../../pages/public/CartPage";
 import ShopPage from "../../../pages/public/ShopPage";
+import ProfilePage from "../../../pages/client/profile/ProfilePage";
+
 
 // sau này mở rộng:
 // import AboutPage from "@/pages/public/AboutPage";
@@ -46,8 +48,18 @@ const publicRoutes = [
         path: "/details/:slug",
         element: <ProductDetails />,
       },
-      { path: "/cart", element: <CartPage /> },
-      { path: "/category", element: <ShopPage /> },
+      { 
+        path: "/cart", 
+        element: <CartPage /> 
+      },
+      { 
+        path: "/category", 
+        element: <ShopPage /> 
+      },
+      {
+        path: "/profile",
+        element: <ProfilePage />,
+      },
 
 
       // ===== MỞ RỘNG SAU =====

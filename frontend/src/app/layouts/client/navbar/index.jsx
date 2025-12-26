@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { CiSearch, CiShoppingCart } from "react-icons/ci";
 import { FaRegUser } from "react-icons/fa";
 import { MdKeyboardArrowDown } from "react-icons/md";
@@ -6,8 +6,12 @@ import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllCategories } from "../../../../features/category/category.store";
+import { UserAuthContext } from "../../../context/user.auth.context";
+import UserPopup from "./UserPopup";
 
 const Navbar = ({ onScrollToSection }) => {
+  const { auth, setAuth } = useContext(UserAuthContext);
+  const [openUser, setOpenUser] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openMix, setOpenMix] = useState(false);
@@ -33,25 +37,25 @@ const Navbar = ({ onScrollToSection }) => {
   const currentSearch = searchParams.get("search") || "";
   const [searchInput, setSearchInput] = useState(currentSearch);
 
- const handleSearch = (e) => {
-  e.preventDefault();
-  const term = searchInput.trim();
-  const currentPath = window.location.pathname; 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const term = searchInput.trim();
+    const currentPath = window.location.pathname;
 
- 
-  const targetPath = currentPath === "/category" ? "/category" : "/";
 
-  if (term) {
-    navigate(`${targetPath}?search=${encodeURIComponent(term)}`);
-  } else {
-    navigate(targetPath);
-  }
+    const targetPath = currentPath === "/category" ? "/category" : "/";
 
- 
-  if (targetPath === "/") {
-    onScrollToSection("menuFruit");
-  }
-};
+    if (term) {
+      navigate(`${targetPath}?search=${encodeURIComponent(term)}`);
+    } else {
+      navigate(targetPath);
+    }
+
+
+    if (targetPath === "/") {
+      onScrollToSection("menuFruit");
+    }
+  };
   return (
     <nav
       className={`
@@ -60,10 +64,9 @@ const Navbar = ({ onScrollToSection }) => {
         z-50
         transition-all duration-300
         
-        ${
-          isSticky
-            ? "sticky top-0 w-full shadow-md"
-            : "absolute top-[105px] left-0 w-[98vw]"
+        ${isSticky
+          ? "sticky top-0 w-full shadow-md"
+          : "absolute top-[105px] left-0 w-[98vw]"
         }
       `}
     >
@@ -164,22 +167,22 @@ const Navbar = ({ onScrollToSection }) => {
               <ul className="ml-4 mb-2 space-y-1 text-gray-600">
                 {isLoading
                   ? [1, 2, 3].map((i) => (
-                      <li
-                        key={i}
-                        className="py-2 h-4 w-24 bg-gray-200 animate-pulse rounded"
-                      ></li>
-                    ))
+                    <li
+                      key={i}
+                      className="py-2 h-4 w-24 bg-gray-200 animate-pulse rounded"
+                    ></li>
+                  ))
                   : listCategories
-                      .filter((cat) => cat.type === "mix")
-                      .map((cat) => (
-                        <li
-                          key={cat._id}
-                          className="py-1 cursor-pointer"
-                         onClick={() => navigate(`/category?category=${cat.slug}`)}
-                        >
-                          {cat.name}
-                        </li>
-                      ))}
+                    .filter((cat) => cat.type === "mix")
+                    .map((cat) => (
+                      <li
+                        key={cat._id}
+                        className="py-1 cursor-pointer"
+                        onClick={() => navigate(`/category?category=${cat.slug}`)}
+                      >
+                        {cat.name}
+                      </li>
+                    ))}
               </ul>
             )}
 
@@ -204,28 +207,74 @@ const Navbar = ({ onScrollToSection }) => {
               <ul className="ml-4 mb-2 space-y-1 text-gray-600">
                 {isLoading
                   ? // Hiển thị 3 dòng loading giả
-                    [1, 2, 3].map((i) => (
-                      <li
-                        key={i}
-                        className="py-2 h-4 w-24 bg-gray-200 animate-pulse rounded"
-                      ></li>
-                    ))
+                  [1, 2, 3].map((i) => (
+                    <li
+                      key={i}
+                      className="py-2 h-4 w-24 bg-gray-200 animate-pulse rounded"
+                    ></li>
+                  ))
                   : listCategories
-                      .filter((cat) => cat.type === "single")
-                      .map((cat) => (
-                        <li
-                          key={cat._id}
-                          className="py-1 cursor-pointer"
-                         onClick={() => navigate(`/category?category=${cat.slug}`)}
-                        >
-                          {cat.name}
-                        </li>
-                      ))}
+                    .filter((cat) => cat.type === "single")
+                    .map((cat) => (
+                      <li
+                        key={cat._id}
+                        className="py-1 cursor-pointer"
+                        onClick={() => navigate(`/category?category=${cat.slug}`)}
+                      >
+                        {cat.name}
+                      </li>
+                    ))}
               </ul>
             )}
 
-            <li className="border-t mt-3 pt-3 py-2 font-medium">Đăng nhập</li>
-            <li className="py-2 font-medium">Đăng ký</li>
+            <div className="md:hidden">
+  {!auth.isAuthenticated ? (
+    <li className="border-t mt-3 pt-4 list-none">
+      <button
+        onClick={() => { setOpenUser(false); navigate("/login"); }}
+        className="w-full py-3 bg-green-500 text-white rounded-xl font-bold shadow-md active:scale-95 transition-all text-center"
+      >
+        Đăng nhập
+      </button>
+    </li>
+  ) : (
+    <li className="border-t mt-3 pt-4 list-none">
+      {/* Thông tin User Mobile */}
+      <div className="flex items-center gap-3 mb-4 p-3 bg-gray-50 rounded-2xl">
+        <img 
+          src={auth.user?.image?.url || "https://via.placeholder.com/40"} 
+          className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm"
+          alt="avatar"
+        />
+        <div className="flex flex-col">
+          <span className="font-bold text-gray-800 text-sm">{auth.user?.fullName}</span>
+          <span className="text-[11px] text-gray-500">{auth.user?.email}</span>
+        </div>
+      </div>
+      {/* Nút bấm Mobile */}
+      <div className="grid grid-cols-2 gap-2">
+        <button
+          onClick={() => { setOpenUser(false); navigate("/profile"); }}
+          className="py-2.5 text-sm font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl active:bg-gray-100"
+        >
+          Tài khoản
+        </button>
+        <button
+          onClick={() => {
+            localStorage.clear();
+            setAuth({ isAuthenticated: false, user: null });
+            setOpenUser(false);
+            navigate("/", { replace: true });
+          }}
+          className="py-2.5 text-sm font-semibold text-red-500 bg-red-50 rounded-xl active:bg-red-100"
+        >
+          Đăng xuất
+        </button>
+      </div>
+    </li>
+  )}
+</div>
+         
 
             <li className="border-t mt-4 pt-4 space-y-2 text-xs text-gray-600">
               <div className="flex items-center gap-2">
@@ -286,7 +335,7 @@ const Navbar = ({ onScrollToSection }) => {
                 .map((cat) => (
                   <li
                     key={cat._id}
-                   onClick={() => navigate(`/category?category=${cat.slug}`)}
+                    onClick={() => navigate(`/category?category=${cat.slug}`)}
                     className="px-5 py-2.5 hover:bg-green-50 hover:text-[#49a760] transition-colors cursor-pointer text-sm font-normal"
                   >
                     {cat.name}
@@ -316,7 +365,7 @@ const Navbar = ({ onScrollToSection }) => {
                 .map((cat) => (
                   <li
                     key={cat._id}
-                   onClick={() => navigate(`/category?category=${cat.slug}`)}
+                    onClick={() => navigate(`/category?category=${cat.slug}`)}
                     className="px-5 py-2.5 hover:bg-green-50 hover:text-[#49a760] transition-colors cursor-pointer text-sm font-normal"
                   >
                     {cat.name}
@@ -371,15 +420,48 @@ const Navbar = ({ onScrollToSection }) => {
 
           {/* USER */}
           <div className="relative group">
-            <span className=" inline-flex items-center gap-1 px-3 py-2 cursor-pointer">
+            <span
+              className="inline-flex items-center gap-1 px-3 py-2 cursor-pointer"
+              onClick={() => setOpenUser((prev) => !prev)}
+            >
               <FaRegUser />
               <MdKeyboardArrowDown />
             </span>
-            <Dropdown align="right">
-              <DropdownItem text="Đăng nhập" />
-           
-     
-            </Dropdown>
+
+           {!auth.isAuthenticated && openUser && (
+  <div className="absolute right-0 mt-3 z-50 bg-white rounded-xl shadow-xl p-2 min-w-[140px] border border-gray-100 animate-in fade-in slide-in-from-top-2 duration-200">
+    <button
+      onClick={() => {
+        setOpenUser(false);
+        navigate("/login");
+      }}
+      className="  px-4 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-green-50 hover:text-green-600 transition-all w-full text-center"
+    >
+    
+    
+      Đăng nhập
+    </button>
+  </div>
+)}
+
+            {auth.isAuthenticated && auth.user && openUser && (
+              <div className="absolute right-0 mt-3 z-50">
+                <UserPopup
+                  user={auth.user}
+                  onProfile={() => {
+                    setOpenUser(false);
+                    navigate("/profile");
+                  }}
+                  onLogout={() => {
+                    localStorage.clear();
+                    setAuth({ isAuthenticated: false, user: null });
+                    setOpenUser(false);
+                    navigate("/", { replace: true });
+                  }}
+                />
+              </div>
+            )}
+
           </div>
         </li>
       </ul>
@@ -388,26 +470,4 @@ const Navbar = ({ onScrollToSection }) => {
 };
 
 export default Navbar;
-const Dropdown = ({ children, align = "left" }) => (
-  <ul
-    className={`
-      absolute top-full mt-3 w-48
-      bg-[#f8f7f2]
-      shadow-xl rounded-lg py-2
-      opacity-0 invisible
-      group-hover:opacity-100 group-hover:visible
-      transition-all duration-300
-      border border-gray-100
-      z-50
-      ${align === "right" ? "right-0" : "left-0"}
-    `}
-  >
-    {children}
-  </ul>
-);
 
-const DropdownItem = ({ text }) => (
-  <li className="px-5 py-2.5 hover:bg-gradient-to-r hover:from-green-50 hover:to-transparent hover:text-green-600 transition cursor-pointer">
-    {text}
-  </li>
-);

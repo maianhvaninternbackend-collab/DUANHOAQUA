@@ -35,6 +35,7 @@ export default defineConfig([
       'no-unused-vars': 'off',
       'no-debugger': 'off',
       'react/prop-types': 'off',
+      'no-undef': 'off',
     },
   },
 ])

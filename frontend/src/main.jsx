@@ -9,20 +9,33 @@ import "./index.css";
 import ScrollToTop from "./features/product/hooks/ScrollToTop.jsx";
 import { store } from "./app/store/store.js";
 
-import { AdminAuthWrapper } from "./app/context/admin.auth.context.jsx";
 import { UserAuthWrapper } from "./app/context/user.auth.context.jsx";
+
+import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
+import theme from "./theme";
+
+import AuthProvider from "./app/providers/AuthProvides.jsx";
+import ToastProvider from "./shared/ui/Toast/ToastProvider";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
-      <UserAuthWrapper>
-        <AdminAuthWrapper>
-          <BrowserRouter>
-            <ScrollToTop />
-            <App />
-          </BrowserRouter>
-        </AdminAuthWrapper>
-      </UserAuthWrapper>
+      <AuthProvider>
+        <UserAuthWrapper>
+          <ChakraProvider theme={theme}>
+            <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+
+            <BrowserRouter>
+              <ScrollToTop />
+              <ToastProvider>
+                <App />
+              </ToastProvider>
+            </BrowserRouter>
+
+          </ChakraProvider>
+        </UserAuthWrapper>
+      </AuthProvider>
     </Provider>
   </StrictMode>
 );
+

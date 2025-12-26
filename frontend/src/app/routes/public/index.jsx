@@ -1,97 +1,74 @@
-
 import { Navigate } from "react-router-dom";
-// import { RouterProvider } from "react-router-dom";
-// import React from 'react'
-// import ReactDOM from 'react-dom/client'
 
+// Layouts
 import PublicLayout from "../../layouts/client/index";
+import AdminLayout from "~/components/layout/Layout"; // layout admin của bạn
 
-// pages (public)
-import HomePage from "../../../pages/public/HomePage";
+// Guards
+import AdminRoute from "../guards/admin.router"; // guard RBAC của bạn
+// Nếu client cần bắt login thì tạo PrivateRoute tương tự
 
-import LoginPage from '../../../features/login/user/login.jsx';
-import RegisterPage from '../../../features/register/user/register.jsx';
+// Public pages/admin (client)
+import HomePage from "~/pages/public/HomePage";
+import ProductDetails from "~/pages/public/ProductDetailsPage";
+import CartPage from "~/pages/public/CartPage";
+import ShopPage from "~/pages/public/ShopPage";
 
-import HomeAdmin from '../../../pages/admin/home/home.jsx';
-import LoginAdmin from '../../../features/login/admin/login.jsx';
-import RegisterAdmin from '../../../features/register/admin/register.jsx';
-import AdminPage from '../../../pages/admin/adminpage/accounts.jsx';
-import UserPage from '../../../pages/admin/userpage/user.jsx';
-import ProductManagement from '../../../pages/admin/productmanagement/productManagement.jsx';
-import CategoryManagement from '../../../pages/admin/categorymanagement/categoryManagement.jsx';
-// import { AdminAuthWrapper } from '../../context/admin.auth.context.jsx';
-// import { UserAuthWrapper } from '../../context/user.auth.context.jsx';
-import ProtectedAdminRoute from '../guards/protectedAdminRoute.jsx';
+// Auth pages (client)
+import LoginPage from "~/features/login/user/login.jsx";
+import RegisterPage from "~/features/register/user/register.jsx";
 
-import ProductDetails from "../../../pages/public/ProductDetailsPage";
-import CartPage from "../../../pages/public/CartPage";
-import ShopPage from "../../../pages/public/ShopPage";
 
-// sau này mở rộng:
-// import AboutPage from "@/pages/public/AboutPage";
-// import ContactPage from "@/pages/public/ContactPage";
+// Error pages
+import ForbiddenPage from "~/pages/admin/ForbiddenPage";
+import NotFound from "~/pages/admin/NotFound";
 
-const publicRoutes = [
+// Admin routers list
+import { adminRouters } from "../admin.routerPath";
+
+const routes = [
+  // ===== CLIENT PUBLIC =====
   {
     element: <PublicLayout />,
     children: [
-      {
-
-        index: true,          
-        element: <HomePage />,
-      },
-
-      
-      {
-        path: "/details/:slug",
-        element: <ProductDetails />,
-      },
-      { path: "/cart", element: <CartPage /> },
-      { path: "/category", element: <ShopPage /> },
-
-
-      // ===== MỞ RỘNG SAU =====
-      // {
-      //   path: "about",
-      //   element: <AboutPage />,
-      // },
-      // {
-      //   path: "contact",
-      //   element: <ContactPage />,
-      // },
+      { index: true, element: <HomePage /> },
+      { path: "details/:slug", element: <ProductDetails /> },
+      { path: "cart", element: <CartPage /> },
+      { path: "category", element: <ShopPage /> },
     ],
   },
 
-   // ===== ADMIN PUBLIC =====
-  {
-    path: "/admin/login",
-    element: <LoginAdmin />,
-  },
-  {
-    path: "/admin/register",
-    element: <RegisterAdmin />,
-  },
-  { path: "login", 
-    element: <LoginPage /> 
-  },
-  { path: "register", 
-    element: <RegisterPage /> 
-  },
+  // ===== CLIENT AUTH =====
+  { path: "/login", element: <LoginPage /> },
+  { path: "/register", element: <RegisterPage /> },
 
-  // ===== ADMIN PRIVATE (BẮT BUỘC LOGIN) =====
+
+  // ===== ADMIN PRIVATE (RBAC) =====
   {
     path: "/admin",
-    element: <ProtectedAdminRoute />, // 🔥 CHỐT CHẶN Ở ĐÂY
+    element: <AdminRoute />, // guard -> phải return <Outlet/>
     children: [
-      { index: true, element: <Navigate to="/admin/home" replace /> },
-      { path: "home", element: <HomeAdmin /> },
-      { path: "user", element: <UserPage /> },
-      { path: "accounts", element: <AdminPage /> },
-      { path: "product", element: <ProductManagement /> },
-      { path: "category", element: <CategoryManagement /> },
+      {
+        element: <AdminLayout />, // layout admin -> phải có <Outlet/>
+        children: [
+          // /admin -> redirect về /admin/home (hoặc screen đầu tiên)
+          { index: true, element: <Navigate to="home" replace /> },
+
+          // map các trang admin
+          ...adminRouters.map((r) => {
+            const Page = r.component;
+            return { path: r.path, element: <Page /> };
+          }),
+        ],
+      },
     ],
   },
- 
+
+  // ===== ERRORS =====
+  { path: "/403", element: <ForbiddenPage /> },
+
+  // ===== NOT FOUND =====
+  { path: "*", element: <NotFound /> },
 ];
 
-export default publicRoutes;
+export default routes;

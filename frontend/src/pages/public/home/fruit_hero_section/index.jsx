@@ -62,9 +62,10 @@ const FruitHeroSection = () => {
             </p>
           </div>
 
-          <button className="w-full lg:w-auto border-none uppercase font-bold text-white bg-[#1f4d3d] rounded-lg py-3 px-10 mt-4 transition-colors hover:bg-[#16382c]">
-            Mua ngay
-          </button>
+         <button className="!w-full !md:w-auto !border-0 !uppercase !font-bold !text-white !bg-[#ff9100] !hover:brightness-110 !transition-all !rounded-lg !py-3 !px-10 !shadow-md">
+  Mua ngay
+</button>
+
         </div>
 
         {/* --- HÌNH ẢNH (Giữ nguyên w-3/5) --- */}

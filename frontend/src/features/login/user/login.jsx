@@ -1,63 +1,20 @@
-import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
-import { loginUserApi } from "../../../api/auth.api";
+
+import { useLogin } from "~/features/auth/hooks/useLogin";
 import "./login.css";
-import { UserAuthContext } from "../../../app/context/user.auth.context";
 
 const LoginPage = () => {
-  const navigate = useNavigate();
-  const { setAuth } = useContext(UserAuthContext);
-
-  const [formValues, setFormValues] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState({});
+  const { form, fieldErrors, error, loading, onChange, onSubmit } = useLogin();
   const [showPassword, setShowPassword] = useState(false);
-  const [notification, setNotification] = useState({ message: "", type: "" });
-
-  const handleChange = (e) => {
-    setFormValues({ ...formValues, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const res = await loginUserApi({
-        email: formValues.email,
-        password: formValues.password,
-      });
-
-      if (res.EC !== 0) {
-        setNotification({ message: res.EM, type: "error" });
-        return;
-      }
-
-      localStorage.setItem("access_token", res.access_token);
-      localStorage.setItem("user", JSON.stringify(res.user));
-
-      setAuth({
-        isAuthenticated: true,
-        user: res.user,
-      });
-
-      navigate("/");
-    } catch (err) {
-      setNotification({ message: "Server error!", type: "error" });
-    }
-  };
 
   return (
     <div className="login-page">
-
       {/* Notification */}
-      {notification.message && (
-        <div className={`notification ${notification.type}`}>
-          {notification.message}
-        </div>
-      )}
+      {error && <div className="notification error">{error}</div>}
 
       <div className="login-card">
-
         {/* LEFT banner */}
         <div className="login-left">
           <h1>Welcome back!</h1>
@@ -66,8 +23,7 @@ const LoginPage = () => {
 
         {/* RIGHT form */}
         <div className="login-right">
-
-          <form className="login-form" onSubmit={handleSubmit}>
+          <form className="login-form" onSubmit={onSubmit}>
             <h2 className="form-title">Sign In</h2>
 
             {/* Email */}
@@ -76,10 +32,13 @@ const LoginPage = () => {
                 type="email"
                 name="email"
                 placeholder="Username or email"
-                value={formValues.email}
-                onChange={handleChange}
+                value={form.email}
+                onChange={onChange}
+                disabled={loading}
               />
-              {errors.email && <span className="error">{errors.email}</span>}
+              {fieldErrors.email && (
+                <span className="error">{fieldErrors.email}</span>
+              )}
             </div>
 
             {/* Password */}
@@ -89,18 +48,24 @@ const LoginPage = () => {
                   type={showPassword ? "text" : "password"}
                   name="password"
                   placeholder="Password"
-                  value={formValues.password}
-                  onChange={handleChange}
+                  value={form.password}
+                  onChange={onChange}
+                  disabled={loading}
                 />
 
                 <span
                   className="password-toggle"
-                  onClick={() => setShowPassword(!showPassword)}
+                  onClick={() => setShowPassword((p) => !p)}
+                  role="button"
+                  tabIndex={0}
                 >
                   {showPassword ? <FaEye /> : <FaEyeSlash />}
                 </span>
               </div>
-              {errors.password && <span className="error">{errors.password}</span>}
+
+              {fieldErrors.password && (
+                <span className="error">{fieldErrors.password}</span>
+              )}
             </div>
 
             <div className="remember">
@@ -110,12 +75,13 @@ const LoginPage = () => {
               <a href="#">Forgot password?</a>
             </div>
 
-            <button type="submit" className="submit-btn">Sign In</button>
+            <button type="submit" className="submit-btn" disabled={loading}>
+              {loading ? "Signing in..." : "Sign In"}
+            </button>
 
             <p className="create-account">
-              New here? <a href="/register">Create an Account</a>
+              New here? <Link to="/register">Create an Account</Link>
             </p>
-
           </form>
         </div>
       </div>

@@ -1,32 +1,34 @@
-import { Navigate, Outlet } from "react-router-dom";
-import { useContext } from "react";
-import { AdminAuthContext } from "../../context/admin.auth.context";
-import HeaderAdmin from "../../layouts/admin/Header/header";
-import AdminFilterBar from "../../layouts/admin/Topbar/adminFilterBar";
 import "./protectedAdminRoute.css";
 
-const ProtectedAdminRoute = () => {
-  const { auth } = useContext(AdminAuthContext);
+import { Navigate, useLocation, Outlet } from 'react-router-dom'
+import PropTypes from 'prop-types'
+import { authService } from '../../services/authService'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-  if (!auth?.isAuthenticated) {
-    return <Navigate to="/admin/login" replace />;
+function ProtectedAdminRoute({ children }) {
+  const location = useLocation()
+  const navigate = useNavigate()
+  const isAuthenticated = authService.isAuthenticated()
+
+  useEffect(() => {
+    // Check if token exists in localStorage
+    const token = localStorage.getItem('access_token')
+    if (!token) {
+      navigate('/login', { replace: true })
+    }
+  }, [navigate])
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />
   }
 
-  return (
-    <div id="admin-layout">
-      {/* SIDEBAR */}
-      <HeaderAdmin />
+  return children || <Outlet />
+}
 
-      {/* MAIN AREA */}
-      <div className="admin-main">
-        {/* TOP BAR / FILTER BAR */}
-        <AdminFilterBar />
+ProtectedAdminRoute.propTypes = {
+  children: PropTypes.node,
+}
 
-        {/* PAGE CONTENT */}
-        <Outlet />
-      </div>
-    </div>
-  );
-};
 
 export default ProtectedAdminRoute;

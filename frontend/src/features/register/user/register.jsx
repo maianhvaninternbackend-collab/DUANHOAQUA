@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { registerUserApi } from "../../../api/auth.api";
+import { authApi } from "../../../api/authApi";
 import "./register.css";
 
 const RegisterPage = () => {
@@ -71,7 +71,7 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (loading) return; // 🔒 chặn submit 2 lần
+    if (loading) return;
 
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
@@ -82,7 +82,7 @@ const RegisterPage = () => {
     setLoading(true);
 
     try {
-      await registerUserApi({
+      await authApi.registerUserApi({
         fullName: formValues.fullName,
         email: formValues.email,
         password: formValues.password,

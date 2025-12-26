@@ -1,5 +1,11 @@
 import { axiosUser } from "../shared/utils/axios.custiomize";
 
+import apiClient from "~/services/apiClient";
+import { endpoints } from "~/services/endpoints";
+
+export const userApi = {
+  list: (params) => apiClient.get(endpoints.users.getAll, { params }),
+};
 
 // ===== USER =====
 export const getUsersApi = (params) =>
